@@ -19,8 +19,7 @@ class MyApplication(npyscreen.NPSAppManaged):
         self.addFormClass('MAIN', MainMenu, name="MAIN MENU")
         self.addFormClass('MAIN_POPUP',
                      MainMenuPopup, name="Connect to Oracle")
-        self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose\
-            email")
+        self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
 
         """
         self.addFormClass('NEWVEHICLEREGISTRATION',
