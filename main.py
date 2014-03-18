@@ -4,18 +4,7 @@ import pdb
 
 from main_menu import MainMenu
 from main_menu_login_popup import MainMenuPopup
-"""
-from auto_transaction import AutoTransaction, AddBuyer, AddSeller
-from driver_licence_registration import DriverLicenceRegistration
-from violation_record import ViolationRecord
-from search_engine import SearchEngine
-from add_owner_on_vehicle import AddOwnerOnVehicle
-from database import Database
-from driver_search import DriverSearch
-from violation_search import ViolationSearch
-from vehicle_history_search import VehicleHistorySearch    
-from add_people import AddPerson        
-"""
+from compose_mail import ComposeMail
 
 class MyApplication(npyscreen.NPSAppManaged):
     """
@@ -26,12 +15,17 @@ class MyApplication(npyscreen.NPSAppManaged):
     def onStart(self):
         # empty Database object with db.logged_in = False
         # self.db = Database()   
+
         self.addFormClass('MAIN', MainMenu, name="MAIN MENU")
         self.addFormClass('MAIN_POPUP',
                      MainMenuPopup, name="Connect to Oracle")
+        self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose\
+            email")
+
         """
         self.addFormClass('NEWVEHICLEREGISTRATION',
-                     NewVehicleRegistration, name='New Vehicle Registration')
+                     NewVehicleRegistration, name='New 
+                     Vehicle Registration')
 
         self.auto_transaction_initialized = False
         self.addFormClass('ADDBUYER', AddBuyer, name='Add Buyer')

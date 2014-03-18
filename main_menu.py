@@ -4,14 +4,31 @@ import npyscreen
 class MainMenu(npyscreen.FormBaseNew):
     def notify_not_logged_in(self):
         npyscreen.notify_confirm("Please log in first!", 
-            title="No Database Connection", form_color='STANDOUT', wrap=True, wide=False, editw=1)
+            title="No Database Connection", form_color='STANDOUT',
+            wrap=True, wide=False, editw=1)
         self.parentApp.switchForm("MAIN")
 
     def create(self):
-        def buttonpress0(*args):
+        """
+        THis is run like the __init__ method when
+        we create a new class instance
+        """
+        # set up button press methods
+        def press_gmail_login(*args):
             self.parentApp.switchForm("MAIN_POPUP")
-        self.button0 = self.add(npyscreen.ButtonPress, name="Gmail Login")
-        self.button0.whenPressed = buttonpress0
+        
+        def press_compose_button(*args):
+            self.parentApp.switchForm("COMPOSE_MAIL")
+
+        # setup buttons..
+        self.login_button = self.add(npyscreen.ButtonPress, 
+            name="Gmail Login")
+        self.login_button.whenPressed = press_gmail_login
+
+        self.compose_button = self.add(npyscreen.ButtonPress, 
+            name="Compose New Mail")
+        self.compose_button.whenPressed = press_compose_button
+
 
         """
         def buttonpress1(*args):
