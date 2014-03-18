@@ -1,10 +1,10 @@
 #!/Library/Frameworks/Python.framework/Versions/3.3/bin/python3
 import npyscreen
-# import cx_Oracle
 import pdb
 
+from main_menu import MainMenu
+from main_menu_login_popup import MainMenuPopup
 """
-from new_vehicle_registration import NewVehicleRegistration
 from auto_transaction import AutoTransaction, AddBuyer, AddSeller
 from driver_licence_registration import DriverLicenceRegistration
 from violation_record import ViolationRecord
@@ -18,9 +18,14 @@ from add_people import AddPerson
 """
 
 class MyApplication(npyscreen.NPSAppManaged):
+    """
+    This is the main application class which manages the application.
+    It handles switching forms, the main application loop and other
+    bookkeeping
+    """
     def onStart(self):
-
-        # self.db = Database()   # empty Database object with db.logged_in = False
+        # empty Database object with db.logged_in = False
+        # self.db = Database()   
         self.addFormClass('MAIN', MainMenu, name="MAIN MENU")
         self.addFormClass('MAIN_POPUP',
                      MainMenuPopup, name="Connect to Oracle")
@@ -50,89 +55,10 @@ class MyApplication(npyscreen.NPSAppManaged):
                      VehicleHistorySearch, name='Vehicle History Search')
         """
 
-# this is the login form.
-class MainMenuPopup(npyscreen.ActionPopup):
-    def create(self):
-        self.username = self.add(npyscreen.TitleText, name="Oracle user:")
-        self.username.value = 'djphan'
-        self.password = self.add(npyscreen.TitlePassword, name="Password:")
-        self.password.value = ''
-        self.host = self.add(npyscreen.TitleText, name="Host:")
-        self.host.value = "@gwynne.cs.ualberta.ca:1521/CRS"
-    
-    # this gets run when the user selects ok in the login form
-    def on_ok(self):
-        """
-        try:
-            self.parentApp.db = Database("%s/%s%s" % (self.username.value,
-                                                      self.password.value,
-                                                      self.host.value))
-        except cx_Oracle.DatabaseError:
-            self.parentApp.db = Database()
-            self.parentApp.switchForm("MAIN_POPUP")
-        else:
-            self.parentApp.switchFormPrevious()
-        """
-    # this gets run when the user selects cancel on the login form.
-    def on_cancel(self):
-        self.parentApp.switchFormPrevious()
-
-# this is the screen you are forwarded to on login.
-class MainMenu(npyscreen.FormBaseNew):
-    def notify_not_logged_in(self):
-        npyscreen.notify_confirm("Please log in first!", 
-            title="No Database Connection", form_color='STANDOUT', wrap=True, wide=False, editw=1)
-        self.parentApp.switchForm("MAIN")
-
-    def create(self):
-        def buttonpress0(*args):
-            self.parentApp.switchForm("MAIN_POPUP")
-        self.button0 = self.add(npyscreen.ButtonPress, name="Gmail Login")
-        self.button0.whenPressed = buttonpress0
-
-        """
-        def buttonpress1(*args):
-            if self.parentApp.db.logged_in: self.parentApp.switchForm("NEWVEHICLEREGISTRATION")
-            else: self.notify_not_logged_in()
-        def buttonpress2(*args):
-            if self.parentApp.db.logged_in:
-                if not self.parentApp.auto_transaction_initialized:
-                    self.parentApp.addForm('AUTOTRANSACTION', AutoTransaction, name='Auto Transaction')
-                    self.parentApp.auto_transaction_initialized = True
-                self.parentApp.switchForm("AUTOTRANSACTION")
-            else: self.notify_not_logged_in()
-        def buttonpress3(*args):
-            if self.parentApp.db.logged_in: self.parentApp.switchForm("DRIVERLICENCEREGISTRATION")
-            else: self.notify_not_logged_in()
-        def buttonpress4(*args):
-            if self.parentApp.db.logged_in: self.parentApp.switchForm("VIOLATIONRECORD")
-            else: self.notify_not_logged_in()
-        def buttonpress5(*args):
-            if self.parentApp.db.logged_in: self.parentApp.switchForm("SEARCHENGINE")
-            else: self.notify_not_logged_in()
-        def buttonpress6(*args):
-            self.parentApp.setNextForm(None)
-            self.editing = False
-
-        self.button0 = self.add(npyscreen.ButtonPress, name="Oracle Login")
-        self.button0.whenPressed = buttonpress0
-        self.nextrely += 1 
-        self.button1 = self.add(npyscreen.ButtonPress, name="New Vehicle Registration")
-        self.button1.whenPressed = buttonpress1
-        self.button2 = self.add(npyscreen.ButtonPress, name="Auto Transaction")
-        self.button2.whenPressed = buttonpress2
-        self.button3 = self.add(npyscreen.ButtonPress, name="Driver Licence Registration")
-        self.button3.whenPressed = buttonpress3
-        self.button4 = self.add(npyscreen.ButtonPress, name="Violation Record")
-        self.button4.whenPressed = buttonpress4
-        self.button5 = self.add(npyscreen.ButtonPress, name="Search Engine")
-        self.button5.whenPressed = buttonpress5
-        self.nextrely += 1
-        self.button6 = self.add(npyscreen.ButtonPress, name="Quit",)
-        self.button6.whenPressed = buttonpress6
-        """
-
+# app script.
 if __name__ == "__main__":
+    # create an application instance
+    # and call its run method.
     app = MyApplication()
     app.run()
     print('done')
