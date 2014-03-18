@@ -1,0 +1,55 @@
+CMPUT 275 Project Proposal
+Team:
+Sean Schneideman
+Jonathan Cairo
+
+It is difficult to find a simple, useable, gui terminal email application. 
+Nearly all available applications are text oriented and do not allow the user to
+interact without typing commands explicitly.
+
+We would like to solve this problem by creating a terminal based email/gmail client
+using some of the available python frameworks and the 
+standard ncurses python gui module.
+
+At its most basic level the
+application would allow the user to compose a message to 
+a desired recepient and select and read unread messages 
+(up to a reasonable number). As a bonus we would like to 
+explore adding basic text editing features that work when composing 
+a message such as spell check, undo/redo
+and possibly some vim/emacs keybindings that allow for quick navigation.
+
+Milestones:
+1. Create a CLI based script which can establish a connection to the 
+gmail servers/api (when the user provides their credentials) 
+and download basic account information such as
+unread message data, total emails in the inbox and 
+display this information textually to the user.
+
+2. Add further capabilities to the above script so that account specific
+data can be downloaded and new emails can be created and sent. This would include
+the ability to download the text of an email and mark it as read. The script
+would also have the ability to compose and send a message from the command line 
+using a few basic commands.
+
+3. Wire some of the basic functionality implemented 
+in the script described above to a simple terminal 
+gui that allows the user to select a few basic options via the
+keyboard arrow keys and return key. Specifically, allow the user to 
+select a "view unread" button which would then display unread emails,
+and let the user select from the list which one they would like to
+read and display its contents. 
+
+4. Add to the above functionality by allowing the user to select a "compose" button 
+which would create a compose screen to create and send a message from.
+
+5. Implement a system terminal bell for email notifications.
+This would only work if the application was open and running as the current
+process or if it was backgrounded. 
+
+6. Implement an undo/redo system in the compose form that would allow the
+user undo/redo in the compose window.
+
+Bonus:
+7. Implement spell check on emails being composed
+8. implement emacs/vim style keybindings to allow the user quick navigation.
