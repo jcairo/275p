@@ -1,6 +1,9 @@
 #!/Library/Frameworks/Python.framework/Versions/3.3/bin/python3
 import npyscreen
 import pdb
+import imaplib
+import getpass
+
 
 from main_menu import MainMenu
 from main_menu_login_popup import MainMenuPopup
@@ -13,17 +16,28 @@ class MyApplication(npyscreen.NPSAppManaged):
     bookkeeping
     """
     def onStart(self):
-        # empty Database object with db.logged_in = False
-        # self.db = Database()   
+        # npyscreen.setTheme(npyscreen.Themes.ColorfulTheme)
 
         self.addFormClass('MAIN', MainMenu, name="MAIN MENU")
         self.addFormClass('MAIN_POPUP',
-                     MainMenuPopup, name="Connect to Oracle")
+                     MainMenuPopup, name="Gmail login")
         self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
+
+        # create the gmail connection object.
+
+
+
+
+
+
+
+
+
+
 
         """
         self.addFormClass('NEWVEHICLEREGISTRATION',
-                     NewVehicleRegistration, name='New 
+                     NewVehicleRegistration, name='New
                      Vehicle Registration')
 
         self.auto_transaction_initialized = False
