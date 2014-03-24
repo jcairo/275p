@@ -20,6 +20,9 @@ class MainMenu(npyscreen.FormBaseNew):
         def press_compose_button(*args):
             self.parentApp.switchForm("COMPOSE_MAIL")
 
+        def press_inbox_button(*args):
+            self.parentApp.switchForm("INBOX")
+
         # setup buttons..
         self.login_button = self.add(npyscreen.ButtonPress, 
             name="Gmail Login")
@@ -29,7 +32,9 @@ class MainMenu(npyscreen.FormBaseNew):
             name="Compose New Mail")
         self.compose_button.whenPressed = press_compose_button
 
-
+        self.inbox_button = self.add(npyscreen.ButtonPress, 
+            name="Inbox")
+        self.inbox_button.whenPressed = press_inbox_button
         """
         def buttonpress1(*args):
             if self.parentApp.db.logged_in: self.parentApp.switchForm("NEWVEHICLEREGISTRATION")

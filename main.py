@@ -1,4 +1,4 @@
-#!/Library/Frameworks/Python.framework/Versions/3.3/bin/python3
+#!/Library/Frameworks/Python.framework/Versions/4.3/bin/python3
 import npyscreen
 import pdb
 import imaplib
@@ -8,6 +8,7 @@ import getpass
 from main_menu import MainMenu
 from main_menu_login_popup import MainMenuPopup
 from compose_mail import ComposeMail
+from inbox import Inbox
 
 class MyApplication(npyscreen.NPSAppManaged):
     """
@@ -22,9 +23,7 @@ class MyApplication(npyscreen.NPSAppManaged):
         self.addFormClass('MAIN_POPUP',
                      MainMenuPopup, name="Gmail login")
         self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
-
-        # create the gmail connection object.
-
+        self.addFormClass('INBOX', Inbox, name="Mail")
 
 
 
