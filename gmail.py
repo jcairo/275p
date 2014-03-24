@@ -60,7 +60,8 @@ class Mail():
         rv, data = self.mail.uid('search', None, 'ALL')
         uid_lst = data[0].split()
         # iterate through reversed list since newest come last
-        for uid in reversed(uid_lst):
+        uid_lst.reverse()
+        for uid in uid_lst[0:10]:
             #pdb.set_trace()
             # each uid is a bytearray, cast to str for each mail fetch
             rv, msg_data = self.mail.uid('fetch', str(int(uid)), '(RFC822)')

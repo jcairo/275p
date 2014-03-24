@@ -1,4 +1,5 @@
 import npyscreen
+import pdb
 
 # this is the screen used to show email data for any mailbox retrieved
 class Inbox(npyscreen.FormBaseNew):
@@ -21,6 +22,7 @@ class Inbox(npyscreen.FormBaseNew):
              max_height=5)
         
         # get a list of email headers from/date/subject
+        # pdb.set_trace()
         email_hdr_lst = self.parentApp.mail.get_mail_uid("INBOX")
         self.grid.values = email_hdr_lst
 
