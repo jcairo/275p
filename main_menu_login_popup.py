@@ -1,8 +1,8 @@
 import npyscreen
 import imaplib
 import getpass
-from gmail import Mail
-
+from gmaillib import message, account
+import smtplib
 
 # this is the login form.
 class MainMenuPopup(npyscreen.ActionPopup):
@@ -17,13 +17,13 @@ class MainMenuPopup(npyscreen.ActionPopup):
         # try to create an instance of the mail class
         # based on the users login credentials.
         try:
-            self.parentApp.mail = Mail(self.username.value,
+            self.parentApp.mail = account(self.username.value,
                 self.password.value)
-        except KeyError:
+
+        except smtplib.SMTPAuthenticationError:
             npyscreen.notify_confirm("Login failed", title="Error",
                 form_color='STANDOUT', wrap=True, editw=1)
             return
-            # self.parentApp.switchFormPrevious()
 
         # notify the user that the login worked
         npyscreen.notify_confirm("Login successful", title="Success",
