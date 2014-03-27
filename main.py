@@ -25,41 +25,9 @@ class MyApplication(npyscreen.NPSAppManaged):
         self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
         self.addFormClass('INBOX', Inbox, name="Mail")
 
-
-
-
-
-
-
-
-
-
-        """
-        self.addFormClass('NEWVEHICLEREGISTRATION',
-                     NewVehicleRegistration, name='New
-                     Vehicle Registration')
-
-        self.auto_transaction_initialized = False
-        self.addFormClass('ADDBUYER', AddBuyer, name='Add Buyer')
-        self.addFormClass('ADDSELLER', AddSeller, name='Add Seller')
-
-
-
-        self.addFormClass('DRIVERLICENCEREGISTRATION',
-                     DriverLicenceRegistration, name='Driver Licence Registration')
-        self.addFormClass('VIOLATIONRECORD',
-                     ViolationRecord, name='Violation Record')
-        self.addFormClass('SEARCHENGINE',
-                     SearchEngine, name='Search Engine')
-        self.addFormClass('DRIVER_SEARCH',
-                     DriverSearch, name='Driver Search')
-        self.addForm('ADDOWNERONVEHICLE',
-                     AddOwnerOnVehicle, name='Add owner')
-        self.addFormClass('VIOLATION_SEARCH',
-                     ViolationSearch, name='Violation Search')
-        self.addFormClass('VEHICLE_HISTORY_SEARCH',
-                     VehicleHistorySearch, name='Vehicle History Search')
-        """
+        # holds the index of the currently highlighted msg in the
+        # inbox form
+        self.INBOX_MSG_TXT = 0
 
 # app script.
 if __name__ == "__main__":

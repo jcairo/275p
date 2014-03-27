@@ -12,6 +12,10 @@ class MainMenuPopup(npyscreen.ActionPopup):
         self.password = self.add(npyscreen.TitlePassword, name="Password:",
             begin_entry_at = 17)
 
+        # prefilled credentials for testing.
+        self.username.value = 'joncairo'
+        self.password.value = 'Carrma123'
+
     # this gets run when the user selects ok in the login form
     def on_ok(self):
         # try to create an instance of the mail class

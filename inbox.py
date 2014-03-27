@@ -1,5 +1,6 @@
 import npyscreen
 import pdb
+import re
 
 # this is the screen used to show email data for any mailbox retrieved
 class Inbox(npyscreen.FormBaseNew):
@@ -8,61 +9,62 @@ class Inbox(npyscreen.FormBaseNew):
         THis is run like the __init__ method when
         we create a new class instance
         """
-        # when we enter this form we want to make a 
-        # request to the mailbox object to return us a list of
-        # messages in the specified box. 
-        # since we are starting with just the inbox we will
-        # hardcode the call as an "Inbox" request but later
-        # we can modify this by allowing the user to select
-        # which box they want to see
+        self.inbox_messages = self.parentApp.mail.inbox()
+        self.email_hdr_lst = []
 
-
-        # setup the grid
-        self.grid = self.add(MultiLineActionAuto, columns=3,
+        # setup the message headers scroll box
+        self.msg_headers = self.add(MultiLineActionAuto, columns=3,
              max_height=5)
-        
-        # get a list of email headers from/date/subject
-        # pdb.set_trace()
-        inbox_messages = self.parentApp.mail.inbox()
-        email_hdr_lst = []
-        for message in inbox_messages:
-            email_hdr_lst.append(message.sender_addr + message.date + 
-                message.subject)
-
-        self.grid.values = email_hdr_lst
-
-        self.results = self.add(npyscreen.MultiLineEdit, name="Compose", 
+        # setup message body display
+        self.msg_body = self.add(MultiLineEditAuto, name="Compose", 
                                 height=16,
                                 max_height=16, scroll_exit=True,
                                 slow_scroll=True, exit_left=True, 
                                 exit_right=True)
 
+        # get a list of email headers from/date/subject
+
+        # assemble header information for all messages in the
+        # inbox_messages list
+        for message in self.inbox_messages:
+            fmt_msg_hdr = "{0:<18} {1:<10}: {2:<}".format(
+                message.sender_addr.split(' <')[0],
+                message.date, message.subject)
+            self.email_hdr_lst.append(fmt_msg_hdr)
+
+        # pass the list of headers to the widget to display
+        self.msg_headers.values = self.email_hdr_lst
+
         # this is the variable which contains the message value held
         # in the box below the message headers field.
-        # self.results.value = inbox_messages[0].body 
+        self.msg_body.value = self.inbox_messages[0].body 
         
-        # you need an on select/move method which will 
-        # get the selected value, determine which email it is
-        # and print it's body to the message field.
-
-        def set_message_body(self, message_index):
-            self.results.value = message_body 
-
 
 class MultiLineActionAuto(npyscreen.MultiLineAction):
     """
-    This class customizes the widget that displays the email headers
-    to allow it to display the message body of the selected header
+    Add ability to display the message body of the selected header
+    and pass selection to the parent form for display in the lower
+    portion of the form.
     """
     def when_cursor_moved(self):
-        # do the standard cursor moved routine
+        # perform the standard cursor moved routine
         super(MultiLineActionAuto, self).when_cursor_moved()
-        # in addition
-        # get the index from the list as to which email we are on
-        message_index = self.cursor_line
-        self.parentApp.Inbox.results.set_message_body(message_index)
-        # use this value to display the body of the message that is
-        # highlighted
-        #print self.cursor_line
+
+        # get the index of the email header currently selected
+        msg_body = self.parent.inbox_messages[self.cursor_line].body
+        self.parent.parentApp.INBOX_MSG_TXT = msg_body
+        self.parent.set_value(self.cursor_line) 
+
+class MultiLineEditAuto(npyscreen.MultiLineEdit):
+    """
+    Add ability to display body of selected message in text field
+    to the standard text display form.
+    """
+    def when_parent_changes_value(self):
+        self.value = self.parent.parentApp.INBOX_MSG_TXT 
+        self.display()
+
+
+
 
 
