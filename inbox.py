@@ -9,12 +9,22 @@ class Inbox(npyscreen.FormBaseNew):
         THis is run like the __init__ method when
         we create a new class instance
         """
+        # setup form attributes to hold message data
         self.inbox_messages = self.parentApp.mail.inbox()
         self.email_hdr_lst = []
+        
 
         # setup the message headers scroll box
         self.msg_headers = self.add(MultiLineActionAuto, columns=3,
              max_height=5)
+        # set up reply button
+        def press_reply_button(*args):
+            self.parentApp.switchForm("COMPOSE_MAIL")
+
+        self.reply_button = self.add(npyscreen.ButtonPress,
+                                name="Reply")
+        self.reply_button.whenPressed = press_reply_button
+
         # setup message body display
         self.msg_body = self.add(MultiLineEditAuto, name="Compose", 
                                 height=16,
@@ -63,8 +73,3 @@ class MultiLineEditAuto(npyscreen.MultiLineEdit):
     def when_parent_changes_value(self):
         self.value = self.parent.parentApp.INBOX_MSG_TXT 
         self.display()
-
-
-
-
-
