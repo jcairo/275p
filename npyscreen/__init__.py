@@ -46,6 +46,7 @@ from .wgmultiline               import MultiLine, Pager, TitleMultiLine, MultiLi
 from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
                                        TitleMultiSelectFixed, MultiSelectAction
 from .wgeditmultiline           import MultiLineEdit
+from .wgemailcomposewidget	import EmailComposeWidget
 from .wgcombobox                import ComboBox, TitleCombo
 from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox
 from .wgFormControlCheckbox     import FormControlCheckbox
