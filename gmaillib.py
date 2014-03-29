@@ -2,7 +2,8 @@ import imaplib
 import smtplib
 import email
 import os
-
+import time
+import datetime
 #THE MESSAGE CLASS
 
 #PROPERTIES OF A MESSAGE:
@@ -21,7 +22,23 @@ class message:
         self.parsed_email = email.message_from_string(fetched_email)
         self.receiver_addr = parsed['to']
         self.sender_addr = parsed['from']
+
+        # handle times which are of the same day as today
         self.date = parsed['date']
+        """
+        self.date_hdr_fmt = email.utils.parsedate(self.date)
+        self.date_hdr_fmt = time.mktime(self.date_hdr_fmt)
+        # local_time = time.localtime(time.time()) 
+        # self.date_hdr_fmt = time.mktime(self.date_hdr_fmt[:-1]) - \
+            # self.date_hdr_fmt[-1] - (7 * 60)
+
+        if local_time[0] == self.date_hdr_fmt[0] and\
+            local_time[1] == self.date_hdr_fmt[1] and\
+            local_time[2] == self.date_hdr_fmt[2]:
+                # format the time as a hourly time
+                self.date_hdr_fmt = datetime.fromtimestamp(mktime(self.date_hdr_fmt))
+        """
+
         self.subject = parsed['subject']
         self.body = ''
         if parsed.is_multipart():

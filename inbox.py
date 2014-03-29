@@ -19,6 +19,10 @@ class Inbox(npyscreen.FormBaseNew):
              max_height=5)
         # set up reply button
         def press_reply_button(*args):
+            # get the currently highlighted email
+            # attach the relevant data to the parent app
+            # to forward over to the compose form.
+            # determine the reply address
             self.parentApp.switchForm("COMPOSE_MAIL")
 
         self.reply_button = self.add(npyscreen.ButtonPress,
@@ -36,10 +40,11 @@ class Inbox(npyscreen.FormBaseNew):
 
         # assemble header information for all messages in the
         # inbox_messages list
+        self.inbox_messages.reverse()
         for message in self.inbox_messages:
-            fmt_msg_hdr = "{0:<18} {1:<10}: {2:<}".format(
+            fmt_msg_hdr = "{0:<{width}.{width}} {1:<17.17} {2:<}".format(
                 message.sender_addr.split(' <')[0],
-                message.date, message.subject)
+                message.date, message.subject, width=20)
             self.email_hdr_lst.append(fmt_msg_hdr)
 
         # pass the list of headers to the widget to display
@@ -62,7 +67,10 @@ class MultiLineActionAuto(npyscreen.MultiLineAction):
 
         # get the index of the email header currently selected
         msg_body = self.parent.inbox_messages[self.cursor_line].body
+        self.parent.parentApp.SENDER = self.parent.inbox_messages[self.cursor_line].sender_addr
+        self.parent.parentApp.SUBJECT = self.parent.inbox_messages[self.cursor_line].subject
         self.parent.parentApp.INBOX_MSG_TXT = msg_body
+        self.parent.parentApp.INBOX_CURRENTLY_SELECTED = self.cursor_line
         self.parent.set_value(self.cursor_line) 
 
 class MultiLineEditAuto(npyscreen.MultiLineEdit):
