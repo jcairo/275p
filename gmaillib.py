@@ -4,6 +4,8 @@ import email
 import os
 import time
 import datetime
+import re
+import pdb
 #THE MESSAGE CLASS
 
 #PROPERTIES OF A MESSAGE:
@@ -16,15 +18,19 @@ import datetime
 #6. body -- content of the email
 
 class message:
-    def __init__(self, fetched_email):
+    def __init__(self, fetched_email, uid=0):
         accepted_types = ['text/plain']
         parsed = email.message_from_string(fetched_email)
         self.parsed_email = email.message_from_string(fetched_email)
         self.receiver_addr = parsed['to']
         self.sender_addr = parsed['from']
+        self.uid = uid
+        # conditionally set this.
+        self.unread = True
 
         # handle times which are of the same day as today
         self.date = parsed['date']
+
         """
         self.date_hdr_fmt = email.utils.parsedate(self.date)
         self.date_hdr_fmt = time.mktime(self.date_hdr_fmt)
@@ -164,7 +170,8 @@ class account:
 
     def unread(self):
         self.receiveserver.select('Inbox')
-        fetch_list = self.receiveserver.search(None,'UnSeen')[1][0]
+        #fetch_list = self.receiveserver.search(None,'UnSeen')[1][0]
+        fetch_list = self.receiveserver.search(None,'(BODY.PEEK[HEADER])')[1][0]
         fetch_list = fetch_list.split(' ')
         if fetch_list == ['']:
             return []
@@ -192,9 +199,12 @@ class account:
         messages_to_fetch = ','.join(self._get_uids()[start:start+amount])
         fetch_list = self.receiveserver.uid('fetch', messages_to_fetch,'(RFC822)')
         for each_email in fetch_list[1]:
+            pdb.set_trace()
             if(len(each_email) == 1):
                 continue
-            inbox_emails.append(message(each_email[1]))
+            # get the uid and pass it to the message class
+            uid_id, uid = re.search(r'UID [1-9]*', each_email[0]).group().split()
+            inbox_emails.append(message(each_email[1], uid))
         return inbox_emails
 
     def get_inbox_count(self):

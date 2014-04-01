@@ -12,7 +12,6 @@ class Inbox(npyscreen.FormBaseNew):
         # setup form attributes to hold message data
         self.inbox_messages = self.parentApp.mail.inbox()
         self.email_hdr_lst = []
-        
 
         # setup the message headers scroll box
         self.msg_headers = self.add(MultiLineActionAuto, columns=3,
@@ -41,6 +40,7 @@ class Inbox(npyscreen.FormBaseNew):
         # assemble header information for all messages in the
         # inbox_messages list
         self.inbox_messages.reverse()
+        pdb.set_trace()
         for message in self.inbox_messages:
             fmt_msg_hdr = "{0:<{width}.{width}} {1:<17.17} {2:<}".format(
                 message.sender_addr.split(' <')[0],
@@ -67,10 +67,15 @@ class MultiLineActionAuto(npyscreen.MultiLineAction):
 
         # get the index of the email header currently selected
         msg_body = self.parent.inbox_messages[self.cursor_line].body
+
+        # attach the relevant attributes for a response to the parent app
+        # so they are accessible in the repy form.
         self.parent.parentApp.SENDER = self.parent.inbox_messages[self.cursor_line].sender_addr
         self.parent.parentApp.SUBJECT = self.parent.inbox_messages[self.cursor_line].subject
         self.parent.parentApp.INBOX_MSG_TXT = msg_body
         self.parent.parentApp.INBOX_CURRENTLY_SELECTED = self.cursor_line
+
+        # force the widgets on the form to refresh
         self.parent.set_value(self.cursor_line) 
 
 class MultiLineEditAuto(npyscreen.MultiLineEdit):
@@ -78,6 +83,23 @@ class MultiLineEditAuto(npyscreen.MultiLineEdit):
     Add ability to display body of selected message in text field
     to the standard text display form.
     """
+    # def __init__(self):
+    #     super(MultiLineEditAuto, self).__init__(screen, **keywords)
+    #     self.msg_unread = []
+
     def when_parent_changes_value(self):
         self.value = self.parent.parentApp.INBOX_MSG_TXT 
         self.display()
+
+    # all you need to do is add an unread flag to all the emails when
+    # they are created in the gmaillib class and that should be enough
+    # to have unread messages bolded.
+    def _before_print_lines(self):
+        # list containing a True if unread False if read
+        for msg in self.parent.inbox_messages:
+            if msg.unread == True:
+                self.msg_unread.append(True)
+            else:
+                self.msg_unread.append(False)
+        return 
+                

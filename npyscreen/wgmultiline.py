@@ -56,6 +56,7 @@ the same effect can be achieved by altering the __str__() method of displayed ob
         self.exit_left       = exit_left
         self.exit_right      = exit_right
         self.allow_filtering = allow_filtering
+        self.msg_unread = []
         self.widgets_inherit_color = widgets_inherit_color
         super(MultiLine, self).__init__(screen, **keywords)
         if self.height < self.__class__._MINIMUM_HEIGHT:
@@ -203,6 +204,13 @@ object to be passed to the contained widget."""
             for line in self._my_widgets[:-1]:
                 self._print_line(line, indexer)
                 line.task = "PRINTLINE"
+                ###
+                try:
+                    if self.msg_unread[indexer]:
+                        line.show_bold=True
+                except Exception as e:
+                    pass
+                ###
                 line.update(clear=True)
                 indexer += 1
         
