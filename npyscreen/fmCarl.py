@@ -5,7 +5,7 @@ class ActionFormCarl(fmForm.Form):
     """A form with OK and Cancel buttons.  Users should override the on_ok and on_cancel methods."""
     CANCEL_BUTTON_BR_OFFSET = (2, 12)
     OK_BUTTON_TEXT          = "Back"
-    CANCEL_BUTTON_TEXT      = "Cancel"
+    CANCEL_BUTTON_TEXT      = "Spell Check"
 
     def set_up_exit_condition_handlers(self):
         super(ActionFormCarl, self).set_up_exit_condition_handlers()
@@ -26,7 +26,7 @@ class ActionFormCarl(fmForm.Form):
         cmx -= len(c_button_text)+self.__class__.CANCEL_BUTTON_BR_OFFSET[1]
         self.c_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=c_button_text, rely=cmy, relx=cmx, use_max_space=True)
         c_button_postion = len(self._widgets__)-1
-        self.c_button.hidden = True
+        self.c_button.hidden = False
         self.c_button.update()
         
         my, mx = self.curses_pad.getmaxyx()
