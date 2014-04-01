@@ -8,6 +8,7 @@ import getpass
 from main_menu import MainMenu
 from main_menu_login_popup import MainMenuPopup
 from compose_mail import ComposeMail
+from spell_check_popup import SpellCheckPopup
 
 class MyApplication(npyscreen.NPSAppManaged):
     """
@@ -22,6 +23,7 @@ class MyApplication(npyscreen.NPSAppManaged):
         self.addFormClass('MAIN_POPUP',
                      MainMenuPopup, name="Gmail login")
         self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
+        self.addFormClass('SPELL_CHECK_POPUP', SpellCheckPopup, name="Spell Check")
 
         # create the gmail connection object.
 

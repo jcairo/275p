@@ -31,9 +31,10 @@ class ComposeMail(npyscreen.ActionFormCarl):
                                 max_height=16, scroll_exit=True,
                                 slow_scroll=True, exit_left=True, 
                                 exit_right=True)
-        
-        
-    
+
+               
     def on_ok(self):
         self.parentApp.switchFormPrevious()
         
+    def on_cancel(self):
+        self.parentApp.switchForm("SPELL_CHECK_POPUP")
