@@ -48,12 +48,15 @@ class ComposeMail(npyscreen.ActionForm):
         
         # if we have been forwarded here from the inbox page
         # to reply to a message prefill the details To and subject.
-        self.to.value = self.parentApp.SENDER
-        self.subject.value = "RE: " + self.parentApp.SUBJECT 
-        self.message.value = ('\n' * 8) + \
-                                ('-' * 40) + \
-                                ('\n' * 2) + \
-                                self.parentApp.INBOX_MSG_TXT 
+        try:
+            self.to.value = self.parentApp.SENDER
+            self.subject.value = "RE: " + self.parentApp.SUBJECT 
+            self.message.value = ('\n' * 8) + \
+                                    ('-' * 40) + \
+                                    ('\n' * 2) + \
+                                    self.parentApp.INBOX_MSG_TXT 
+        except Exception as e:
+            pass
 
         # set the message body a few lines below
         self.nextrely+=2

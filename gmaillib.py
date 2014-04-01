@@ -18,7 +18,7 @@ import pdb
 #6. body -- content of the email
 
 class message:
-    def __init__(self, fetched_email, uid=0):
+    def __init__(self, fetched_email, uid=None):
         accepted_types = ['text/plain']
         parsed = email.message_from_string(fetched_email)
         self.parsed_email = email.message_from_string(fetched_email)
@@ -199,7 +199,7 @@ class account:
         messages_to_fetch = ','.join(self._get_uids()[start:start+amount])
         fetch_list = self.receiveserver.uid('fetch', messages_to_fetch,'(RFC822)')
         for each_email in fetch_list[1]:
-            pdb.set_trace()
+            #pdb.set_trace()
             if(len(each_email) == 1):
                 continue
             # get the uid and pass it to the message class

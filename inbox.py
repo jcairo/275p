@@ -40,7 +40,6 @@ class Inbox(npyscreen.FormBaseNew):
         # assemble header information for all messages in the
         # inbox_messages list
         self.inbox_messages.reverse()
-        pdb.set_trace()
         for message in self.inbox_messages:
             fmt_msg_hdr = "{0:<{width}.{width}} {1:<17.17} {2:<}".format(
                 message.sender_addr.split(' <')[0],
