@@ -43,9 +43,12 @@ from .wgwidget                  import DummyWidget, NotEnoughSpaceForWidget
 from . import wgwidget as widget
 
 from .wgmultiline               import MultiLine, Pager, TitleMultiLine, MultiLineAction
+#add spellcheck widget for c275 project
+from .wgspellchecker            import SpellChecker
 from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
                                        TitleMultiSelectFixed, MultiSelectAction
 from .wgeditmultiline           import MultiLineEdit
+#added emailcompose widget for c275 project
 from .wgemailcomposewidget	import EmailComposeWidget
 from .wgcombobox                import ComboBox, TitleCombo
 from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox
