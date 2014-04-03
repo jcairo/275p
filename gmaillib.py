@@ -18,7 +18,7 @@ import pdb
 #6. body -- content of the email
 
 class message:
-    def __init__(self, fetched_email, uid=None):
+    def __init__(self, fetched_email, uid=None, unread=None):
         accepted_types = ['text/plain']
         parsed = email.message_from_string(fetched_email)
         self.parsed_email = email.message_from_string(fetched_email)
@@ -26,7 +26,7 @@ class message:
         self.sender_addr = parsed['from']
         self.uid = uid
         # conditionally set this.
-        self.unread = True
+        self.unread = unread
 
         # handle times which are of the same day as today
         self.date = parsed['date']
@@ -197,14 +197,19 @@ class account:
         self.receiveserver.select('Inbox')
         inbox_emails = []
         messages_to_fetch = ','.join(self._get_uids()[start:start+amount])
-        fetch_list = self.receiveserver.uid('fetch', messages_to_fetch,'(RFC822)')
+        fetch_list = self.receiveserver.uid('fetch', messages_to_fetch,
+            '(BODY.PEEK[] FLAGS)')
         for each_email in fetch_list[1]:
-            #pdb.set_trace()
             if(len(each_email) == 1):
                 continue
             # get the uid and pass it to the message class
             uid_id, uid = re.search(r'UID [1-9]*', each_email[0]).group().split()
-            inbox_emails.append(message(each_email[1], uid))
+            # check whether the message has been read
+            if each_email[0].find('\\Seen') >= 0:
+                unread = False
+            else:
+                unread = True
+            inbox_emails.append(message(each_email[1], uid, unread=unread))
         return inbox_emails
 
     def get_inbox_count(self):
