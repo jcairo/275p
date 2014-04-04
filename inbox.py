@@ -12,6 +12,7 @@ class Inbox(npyscreen.FormBaseNew):
         # setup form attributes to hold message data
         self.inbox_messages = self.parentApp.mail.inbox()
         self.email_hdr_lst = []
+        self.cursor_pos = 0
 
         # setup the message headers scroll box
         self.msg_headers = self.add(MultiLineActionAuto, columns=3,
@@ -23,10 +24,64 @@ class Inbox(npyscreen.FormBaseNew):
             # to forward over to the compose form.
             # determine the reply address
             self.parentApp.switchForm("COMPOSE_MAIL")
+        
+        def delete_button(*args):
+            # get index of the currently selected email
+            selected_msg_index = self.cursor_pos
+            # get the uid of the mail 
+            msg_uid = self.inbox_messages[selected_msg_index].uid
+            # call server to mark as read
+            rv = self.parentApp.mail.delete_msg(msg_uid)
+            if rv == 'OK':
+                del self.email_hdr_lst[selected_msg_index]
+                del self.inbox_messages[selected_msg_index]
+                # upate the indexes of the read and unread emails.
 
+
+
+                # delete the email from the headers list
+                #email_hdrs_after_delete = []
+                #email_hdrs_after_delete.append(self.email_hdr_lst[0:selected_msg_index])
+                #email_hdrs_after_delete.append(self.email_hdr_lst[selected_msg_index + 1:])
+                #self.email_hdr_lst = email_hdrs_after_delete
+                ## delete the message from the list of inbox messages
+                #inbox_msg_after_delete = []
+                #inbox_after_delete.append(self.inbox_messages[0:selected_msg_index])
+                #inbox_after_delete.append(self.inbox_messages[selected_msg_index + 1:])
+                #self.inbox_messages = inbox_msg_after_delete
+                # update the screen
+                self.msg_headers.update()
+            else:
+                npyscreen.notify_confirm("Failed to mark as read")
+
+        # set behavious or mark read button
+        def mark_read_button(*args):
+            # get index of the currently selected email
+            selected_msg_index = self.cursor_pos
+            # get the uid of the mail 
+            msg_uid = self.inbox_messages[selected_msg_index].uid
+            # call server to mark as read
+            rv = self.parentApp.mail.mark_read(msg_uid)
+            if rv == 'OK':
+                self.inbox_messages[selected_msg_index].unread = False
+                # update the mails image so its no longer highlighted in the mail list
+                self.msg_headers.msg_unread[selected_msg_index] = False
+                self.msg_headers.update()
+            else:
+                npyscreen.notify_confirm("Failed to mark as read")
+        
+        # place buttons on form
         self.reply_button = self.add(npyscreen.ButtonPress,
                                 name="Reply")
         self.reply_button.whenPressed = press_reply_button
+        self.mark_read = self.add(npyscreen.ButtonPress,
+                                relx=15, rely = 7,
+                                name="Mark Read")
+        self.mark_read.whenPressed = mark_read_button
+        self.delete = self.add(npyscreen.ButtonPress,
+                                relx=28, rely = 7,
+                                name="Delete")
+        self.delete.whenPressed = delete_button
 
         # setup message body display
         self.msg_body = self.add(MultiLineEditAuto, name="Compose", 
@@ -64,6 +119,8 @@ class MultiLineActionAuto(npyscreen.MultiLineAction):
         # perform the standard cursor moved routine
         super(MultiLineActionAuto, self).when_cursor_moved()
 
+        # set the cursor position so we know which email we are on
+        self.parent.cursor_pos = self.cursor_line
         # get the index of the email header currently selected
         msg_body = self.parent.inbox_messages[self.cursor_line].body
 
@@ -77,19 +134,6 @@ class MultiLineActionAuto(npyscreen.MultiLineAction):
         # force the widgets on the form to refresh
         self.parent.set_value(self.cursor_line) 
 
-class MultiLineEditAuto(npyscreen.MultiLineEdit):
-    """
-    Add ability to display body of selected message in text field
-    to the standard text display form.
-    """
-    # def __init__(self):
-    #     super(MultiLineEditAuto, self).__init__(screen, **keywords)
-    #     self.msg_unread = []
-
-    def when_parent_changes_value(self):
-        self.value = self.parent.parentApp.INBOX_MSG_TXT 
-        self.display()
-
     # all you need to do is add an unread flag to all the emails when
     # they are created in the gmaillib class and that should be enough
     # to have unread messages bolded.
@@ -101,4 +145,14 @@ class MultiLineEditAuto(npyscreen.MultiLineEdit):
             else:
                 self.msg_unread.append(False)
         return 
+
+class MultiLineEditAuto(npyscreen.MultiLineEdit):
+    """
+    Add ability to display body of selected message in text field
+    to the standard text display form.
+    """
+    def when_parent_changes_value(self):
+        self.value = self.parent.parentApp.INBOX_MSG_TXT 
+        self.display()
+
                 

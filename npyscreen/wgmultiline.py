@@ -198,7 +198,6 @@ object to be passed to the contained widget."""
                 pass
 
             self._last_start_display_at = self.start_display_at
-            
             self._before_print_lines()
             indexer = 0 + self.start_display_at
             for line in self._my_widgets[:-1]:

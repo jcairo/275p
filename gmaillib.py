@@ -193,6 +193,21 @@ class account:
     def append(self,mailbox, flags, date_time, message):
         self.receiveserver.append(mailbox, flags, date_time, message)
 
+    def mark_read(self, uid):
+        """
+        Takes an email id and marks it as read on the server
+        """
+        ## send mark read request.
+        typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\Seen') 
+        return typ
+
+    def delete_msg(self, uid):
+        """
+        Takes a message id number and deletes it from the server
+        """
+        typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\Deleted')
+        return typ
+
     def inbox(self, start=0, amount=10):
         self.receiveserver.select('Inbox')
         inbox_emails = []
