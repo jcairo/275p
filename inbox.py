@@ -13,33 +13,23 @@ class Inbox(npyscreen.FormBaseNew):
         THis is run like the __init__ method when
         we create a new class instance
         """
+        # set mail check time
+        self.keypress_timeout = 10
+
         # setup form attributes to hold message data
         self.inbox_messages = self.parentApp.mail.inbox()
         self.email_hdr_lst = []
         self.cursor_pos = 0
-        # set mail check time
-        self.keypress_timeout = 10
 
         # setup the message headers scroll box
         self.msg_headers = self.add(MultiLineActionAuto, columns=3,
              max_height=5)
+
         # set up reply button
         def press_reply_button(*args):
-            # get the currently highlighted email
-            # attach the relevant data to the parent app
-            # to forward over to the compose form.
-            # determine the reply address
             self.parentApp.switchForm("COMPOSE_MAIL")
         
-        def new_mail(*args):
-            # this gets called from the threaded mail checker process
-            # if we have new mail
-            # update the mailbox by fetching the new mail
-            # append it to the message list
-            # get the header and append it to the header list
-            # update the display
-            npyscreen.notify_confirm("You've got mail")
-
+        
         def delete_button(*args):
             # get index of the currently selected email
             selected_msg_index = self.cursor_pos
@@ -108,17 +98,37 @@ class Inbox(npyscreen.FormBaseNew):
         # this is the variable which contains the message value held
         # in the box below the message headers field.
         self.msg_body.value = self.inbox_messages[0].body 
-    
+
+    def new_mail(self, *args):
+        # this gets called from the threaded mail checker process
+        # if we have new mail
+        # update the mailbox by fetching the new mail
+        # append it to the message list
+        # get the header and append it to the header list
+        # update the display
+        npyscreen.notify_confirm("You've got mail")
+        new_msg = self.parentApp.mail.inbox(amount=1)[0]
+        # create the header and attach it to the form
+        fmt_msg_hdr = "{0:<{width}.{width}} {1:<17.17} {2:<}".format(
+            new_msg.sender_addr.split(' <')[0],
+            new_msg.date, new_msg.subject, width=20)
+        self.email_hdr_lst.insert(0, fmt_msg_hdr)
+        self.msg_headers.values = self.email_hdr_lst
+        self.inbox_messages.insert(0, new_msg)
+        self.msg_headers.msg_unread.insert(0, True)
+        self.msg_headers.update()
+        self.msg_body.update()
+   
     def while_waiting(self):
         # This method is overridden from the super class it is called when
         # the user is doing nothing so it is very resource light.
         # It provides a hook for the mail check thread to notify the main application
         # thread of new mail.
         # if we find an email we notify the user.
-
         if not self.parentApp.queue.empty():
             self.parentApp.queue.get()
-            npyscreen.notify_ok_cancel("You've got mail")
+            # call the get mail method to process new message
+            self.new_mail()
         return
 
 class MultiLineActionAuto(npyscreen.MultiLineAction):
