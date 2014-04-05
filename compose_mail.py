@@ -44,7 +44,7 @@ class ComposeMail(npyscreen.ActionForm):
                                 max_height=16, scroll_exit=True,
                                 slow_scroll=True, exit_left=True, 
                                 exit_right=True)
-        
+
         
         # if we have been forwarded here from the inbox page
         # to reply to a message prefill the details To and subject.
@@ -58,14 +58,33 @@ class ComposeMail(npyscreen.ActionForm):
         except Exception as e:
             pass
 
+        
+
         # set the message body a few lines below
         self.nextrely+=2
         self.nextrelx+=3
         #self.query_confirm = self.add(npyscreen.ButtonPress, 
             #name="Send", relx=70)
 
-       
-        
+    def beforeEditing(self):
+        #Set message.value if we have a value stored in parentApp attribute
+        self.message.value = self.parentApp.message_save
+        self.message.save_state()
+        #set to and subject values if they exist
+        if not(self.to.value) and self.parentApp.email_to:
+            self.to.value = self.parentApp.email_to
+        if not(self.subject.value) and self.parentApp.email_subject:
+            self.subject.value = self.parentApp.email_subject
+    def afterEditing(self):
+        #stores value of from and subject into parentApp attributes 
+        #for reference 
+        if self.to.value:
+            self.parentApp.email_to = self.to.value
+        if self.subject.value:
+            self.parentApp.email_subject = self.subject.value
     
     def on_ok(self):
         self.parentApp.switchFormPrevious()
+
+    def on_cancel(self):
+        self.parentApp.switchForm("SPELL_CHECK_POPUP")
