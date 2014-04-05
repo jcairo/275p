@@ -26,10 +26,10 @@ class MyApplication(npyscreen.NPSAppManaged):
         self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
         self.addFormClass('INBOX', Inbox, name="Mail")
         self.addFormClass('SPELL_CHECK_POPUP', SpellCheckPopup, name="Spell Check")
-       
+
         # holds the index of the currently highlighted msg in the
         # inbox form
-        self.INBOX_MSG_TXT = 0
+        self.INBOX_MSG_TXT = ''
         
         # create a queue object to synchronize threads
         self.queue = Queue.Queue(0)
