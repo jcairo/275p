@@ -42,6 +42,12 @@ class Inbox(npyscreen.FormBaseNew):
                 del self.inbox_messages[selected_msg_index]
                 # upate the indexes of the read and unread emails.
                 self.msg_headers.update()
+                # update the message body being displayed
+                # if we delete the last message show the one above
+                # otherwise show the one below
+                self.parentApp.INBOX_MSG_TXT = self.inbox_messages[selected_msg_index + 1].body
+                self.msg_body.value = self.parentApp.INBOX_MSG_TXT 
+                self.msg_body.update()
             else:
                 npyscreen.notify_confirm("Failed to mark as read")
             
@@ -100,12 +106,16 @@ class Inbox(npyscreen.FormBaseNew):
         self.msg_body.value = self.inbox_messages[0].body 
 
     def new_mail(self, *args):
-        # this gets called from the threaded mail checker process
-        # if we have new mail
-        # update the mailbox by fetching the new mail
-        # append it to the message list
+        # this gets called from the threaded mail checker process an event
+        # unfortuneatly events can be all sorts of things like deleting a message
+        # so before we actually can confirm we received new mail we need to check
+        # whether a new piece of mail actually exists.
+        new_msg = self.parentApp.mail.inbox(amount=1)[0]
+        if new_msg.uid == self.inbox_messages[0].uid:
+            # this means we don't actually have a new message
+            return
+        # append the new mail to the message list
         # get the header and append it to the header list
-        # update the display
         npyscreen.notify_confirm("You've got mail")
         new_msg = self.parentApp.mail.inbox(amount=1)[0]
         # create the header and attach it to the form
@@ -116,6 +126,7 @@ class Inbox(npyscreen.FormBaseNew):
         self.msg_headers.values = self.email_hdr_lst
         self.inbox_messages.insert(0, new_msg)
         self.msg_headers.msg_unread.insert(0, True)
+        # update the display
         self.msg_headers.update()
         self.msg_body.update()
    
