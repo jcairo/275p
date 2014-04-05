@@ -4,8 +4,8 @@ from . import wgwidget as widget
 class ActionForm(fmForm.Form):
     """A form with OK and Cancel buttons.  Users should override the on_ok and on_cancel methods."""
     CANCEL_BUTTON_BR_OFFSET = (2, 12)
-    OK_BUTTON_TEXT          = "OK"
-    CANCEL_BUTTON_TEXT      = "Cancel"
+    OK_BUTTON_TEXT          = "BACK"
+    CANCEL_BUTTON_TEXT      = "SPELL CHECK"
 
     def set_up_exit_condition_handlers(self):
         super(ActionForm, self).set_up_exit_condition_handlers()
