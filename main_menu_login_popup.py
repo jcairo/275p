@@ -6,6 +6,10 @@ import smtplib
 
 # this is the login form.
 class MainMenuPopup(npyscreen.ActionPopup):
+    OK_BUTTON_TEXT = "OK"
+    CANCEL_BUTTON_TEXT = "CANCEL"    
+
+
     def create(self):
         self.username = self.add(npyscreen.TitleText, name="Gmail address:",
             begin_entry_at = 17)
