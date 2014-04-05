@@ -34,8 +34,16 @@ class Inbox(npyscreen.FormBaseNew):
             # get index of the currently selected email
             selected_msg_index = self.cursor_pos
             # get the uid of the mail 
+            num_msgs = len(self.inbox_messages)
+            # ensure the last message is not deleted.
+            if num_msgs == 1:
+                npyscreen.notify_ok_cancel("Can't delete last message in box")
+                return
+            # if we are deleting the last message show the body of the second
+            # last message
+                 
             msg_uid = self.inbox_messages[selected_msg_index].uid
-            # call server to mark as read
+            # call server to delete
             rv = self.parentApp.mail.delete_msg(msg_uid)
             if rv == 'OK':
                 del self.email_hdr_lst[selected_msg_index]
@@ -45,11 +53,15 @@ class Inbox(npyscreen.FormBaseNew):
                 # update the message body being displayed
                 # if we delete the last message show the one above
                 # otherwise show the one below
-                self.parentApp.INBOX_MSG_TXT = self.inbox_messages[selected_msg_index + 1].body
+                if num_msgs == selected_msg_index + 1:
+                    self.parentApp.INBOX_MSG_TXT = self.inbox_messages[selected_msg_index - 2].body
+                else:
+                    self.parentApp.INBOX_MSG_TXT = self.inbox_messages[selected_msg_index].body
+                # update the display
                 self.msg_body.value = self.parentApp.INBOX_MSG_TXT 
                 self.msg_body.update()
             else:
-                npyscreen.notify_confirm("Failed to mark as read")
+                npyscreen.notify_confirm("Failed to delete")
             
         # set behavious or mark read button
         def mark_read_button(*args):

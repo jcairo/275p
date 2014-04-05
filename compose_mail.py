@@ -5,23 +5,20 @@ import re
 class ComposeMail(npyscreen.ActionForm):
     def create(self):
         def send_button_press():
+            # parse the address out of the "To" field
+            parsed_to = re.search('.+\@.+\..+', self.to.value)
             try:
-                # parse the address out of the "To" field
-                parsed_to = re.search(r'<.*>', self.to.value)
-                # check whether we get a properly formatted address
-                if parsed_to.group() == None:
-                    to = self.to.value.strip('<>')
-                else:
-                    to = parsed_to.group().strip('<>')
-                subj = self.subject.value
-                body = self.message.value
-                self.parentApp.mail.send(to, subj, body)  
+                to = parsed_to.group().strip(' <>')
             except Exception as e:
-                npyscreen.notify_confirm(str(e),
-                                    title="Mail error",
+                npyscreen.notify_confirm(str(e), title="Mail error",
                                     form_color='STANDOUT',
                                     wrap=True, wide=False, editw=1)
                 return    
+
+            subj = self.subject.value
+            body = self.message.value
+            self.parentApp.mail.send(to, subj, body)  
+
             npyscreen.notify_confirm("Mail sent",
                                     title="Send Confirmation",
                                     form_color='STANDOUT',

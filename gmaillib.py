@@ -232,7 +232,8 @@ class account:
         """
         Takes a message id number and deletes it from the server
         """
-        typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\Deleted')
+        typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '(\Deleted)')
+        self.receiveserver.expunge()
         return typ
 
     def inbox(self, start=0, amount=10):
