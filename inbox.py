@@ -1,6 +1,10 @@
 import npyscreen
 import pdb
 import re
+import mail_listener
+import gmaillib
+import imaplib2
+import curses
 
 # this is the screen used to show email data for any mailbox retrieved
 class Inbox(npyscreen.FormBaseNew):
@@ -13,6 +17,8 @@ class Inbox(npyscreen.FormBaseNew):
         self.inbox_messages = self.parentApp.mail.inbox()
         self.email_hdr_lst = []
         self.cursor_pos = 0
+        # set mail check time
+        self.keypress_timeout = 10
 
         # setup the message headers scroll box
         self.msg_headers = self.add(MultiLineActionAuto, columns=3,
@@ -25,6 +31,15 @@ class Inbox(npyscreen.FormBaseNew):
             # determine the reply address
             self.parentApp.switchForm("COMPOSE_MAIL")
         
+        def new_mail(*args):
+            # this gets called from the threaded mail checker process
+            # if we have new mail
+            # update the mailbox by fetching the new mail
+            # append it to the message list
+            # get the header and append it to the header list
+            # update the display
+            npyscreen.notify_confirm("You've got mail")
+
         def delete_button(*args):
             # get index of the currently selected email
             selected_msg_index = self.cursor_pos
@@ -36,24 +51,10 @@ class Inbox(npyscreen.FormBaseNew):
                 del self.email_hdr_lst[selected_msg_index]
                 del self.inbox_messages[selected_msg_index]
                 # upate the indexes of the read and unread emails.
-
-
-
-                # delete the email from the headers list
-                #email_hdrs_after_delete = []
-                #email_hdrs_after_delete.append(self.email_hdr_lst[0:selected_msg_index])
-                #email_hdrs_after_delete.append(self.email_hdr_lst[selected_msg_index + 1:])
-                #self.email_hdr_lst = email_hdrs_after_delete
-                ## delete the message from the list of inbox messages
-                #inbox_msg_after_delete = []
-                #inbox_after_delete.append(self.inbox_messages[0:selected_msg_index])
-                #inbox_after_delete.append(self.inbox_messages[selected_msg_index + 1:])
-                #self.inbox_messages = inbox_msg_after_delete
-                # update the screen
                 self.msg_headers.update()
             else:
                 npyscreen.notify_confirm("Failed to mark as read")
-
+            
         # set behavious or mark read button
         def mark_read_button(*args):
             # get index of the currently selected email
@@ -75,11 +76,11 @@ class Inbox(npyscreen.FormBaseNew):
                                 name="Reply")
         self.reply_button.whenPressed = press_reply_button
         self.mark_read = self.add(npyscreen.ButtonPress,
-                                relx=15, rely = 7,
+                                relx=12, rely = 7,
                                 name="Mark Read")
         self.mark_read.whenPressed = mark_read_button
         self.delete = self.add(npyscreen.ButtonPress,
-                                relx=28, rely = 7,
+                                relx=26, rely = 7,
                                 name="Delete")
         self.delete.whenPressed = delete_button
 
@@ -107,7 +108,18 @@ class Inbox(npyscreen.FormBaseNew):
         # this is the variable which contains the message value held
         # in the box below the message headers field.
         self.msg_body.value = self.inbox_messages[0].body 
-        
+    
+    def while_waiting(self):
+        # This method is overridden from the super class it is called when
+        # the user is doing nothing so it is very resource light.
+        # It provides a hook for the mail check thread to notify the main application
+        # thread of new mail.
+        # if we find an email we notify the user.
+
+        if not self.parentApp.queue.empty():
+            self.parentApp.queue.get()
+            npyscreen.notify_ok_cancel("You've got mail")
+        return
 
 class MultiLineActionAuto(npyscreen.MultiLineAction):
     """
@@ -134,9 +146,6 @@ class MultiLineActionAuto(npyscreen.MultiLineAction):
         # force the widgets on the form to refresh
         self.parent.set_value(self.cursor_line) 
 
-    # all you need to do is add an unread flag to all the emails when
-    # they are created in the gmaillib class and that should be enough
-    # to have unread messages bolded.
     def _before_print_lines(self):
         # list containing a True if unread False if read
         for msg in self.parent.inbox_messages:

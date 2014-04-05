@@ -3,7 +3,7 @@ import npyscreen
 import pdb
 import imaplib
 import getpass
-
+import Queue
 
 from main_menu import MainMenu
 from main_menu_login_popup import MainMenuPopup
@@ -17,17 +17,19 @@ class MyApplication(npyscreen.NPSAppManaged):
     bookkeeping
     """
     def onStart(self):
-        # npyscreen.setTheme(npyscreen.Themes.ColorfulTheme)
-
+        # setup and attach the forms to the main application
         self.addFormClass('MAIN', MainMenu, name="MAIN MENU")
         self.addFormClass('MAIN_POPUP',
                      MainMenuPopup, name="Gmail login")
         self.addFormClass('COMPOSE_MAIL', ComposeMail, name="Compose")
         self.addFormClass('INBOX', Inbox, name="Mail")
-
         # holds the index of the currently highlighted msg in the
         # inbox form
-        self.INBOX_MSG_TXT = 0
+        self.INBOX_MSG_TXT = ''
+        
+        # create a queue object to synchronize threads
+        self.queue = Queue.Queue(0)
+
 
 # app script.
 if __name__ == "__main__":

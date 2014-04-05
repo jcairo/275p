@@ -21,8 +21,12 @@ class MainMenuPopup(npyscreen.ActionPopup):
         # try to create an instance of the mail class
         # based on the users login credentials.
         try:
+            # pass account credentials, a link to the parent app
+            # and a queue object attached to the parent application
+            # for interprocess communication.
             self.parentApp.mail = account(self.username.value,
-                self.password.value)
+                self.password.value, parent=self.parentApp, 
+                queue=self.parentApp.queue)
 
         except smtplib.SMTPAuthenticationError:
             npyscreen.notify_confirm("Login failed", title="Error",

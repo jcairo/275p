@@ -23,6 +23,9 @@ class MainMenu(npyscreen.FormBaseNew):
         def press_inbox_button(*args):
             self.parentApp.switchForm("INBOX")
 
+        def press_quit_button(*args):
+            pass
+
         # setup buttons..
         self.login_button = self.add(npyscreen.ButtonPress, 
             name="Gmail Login", color='CRITICAL')
@@ -35,3 +38,7 @@ class MainMenu(npyscreen.FormBaseNew):
         self.inbox_button = self.add(npyscreen.ButtonPress, 
             name="Inbox")
         self.inbox_button.whenPressed = press_inbox_button
+
+        self.quit = self.add(npyscreen.ButtonPress, 
+            name="Quit")
+        self.quit.whenPressed = press_quit_button

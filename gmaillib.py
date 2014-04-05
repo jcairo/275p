@@ -1,4 +1,4 @@
-import imaplib
+import imaplib2
 import smtplib
 import email
 import os
@@ -6,6 +6,9 @@ import time
 import datetime
 import re
 import pdb
+import mail_listener
+import Queue
+
 #THE MESSAGE CLASS
 
 #PROPERTIES OF A MESSAGE:
@@ -16,6 +19,24 @@ import pdb
 #4. date -- date that the message was sent
 #5. subject -- subject of the email
 #6. body -- content of the email
+
+class Mailbox(object):
+    """
+    A mailbox conatains message instances and provides methods
+    to update the contents when a new email arrives, delete mail
+    and mark mail as read.
+    """
+    def __init__(self):
+
+        def add_mail(self):
+            pass
+
+        def delete_mail(self, uid):
+            pass
+
+        def get_mail_headers(self, uid):
+            pass
+
 
 class message:
     def __init__(self, fetched_email, uid=None, unread=None):
@@ -106,18 +127,30 @@ class message:
 #4. receiveserver
 
 class account:
-    def __init__(self, username, password):
+    def __init__(self, username, password, parent=None, queue=None):
+        self.parent = parent
         self.username = username
         self.password = password
+        # attach communication queue to account instance
+        self.queue = queue
 
         self.sendserver = smtplib.SMTP('smtp.gmail.com:587')
         self.sendserver.starttls()
         self.sendserver.login(username,password)
 
-        self.receiveserver = imaplib.IMAP4_SSL('imap.gmail.com', 993)
+        self.receiveserver = imaplib2.IMAP4_SSL('imap.gmail.com', 993)
         self.receiveserver.login(username,password)
 
+        self.listen_server = imaplib2.IMAP4_SSL('imap.gmail.com', 993)
+        self.listen_server.login(username, password)
+        # initiate listening for incoming mail using threaded process
+        self.listen_server.select("INBOX") 
+        self.idler = mail_listener.Idler(self.listen_server, self.queue, parent=self)
+        self.idler.start()
+        
     def exit_server(self):
+        self.idler.stop()
+        self.idler.join()
         self.sendserver.quit()
         self.receiveserver.close()
         self.receiveserver.logout()
@@ -187,12 +220,6 @@ class account:
         parsed_email = message(fetched_email)
         return parsed_email
     
-    def create_mailbox(self,mailbox):
-        self.receiveserver.create(mailbox)
-
-    def append(self,mailbox, flags, date_time, message):
-        self.receiveserver.append(mailbox, flags, date_time, message)
-
     def mark_read(self, uid):
         """
         Takes an email id and marks it as read on the server
