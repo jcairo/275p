@@ -232,8 +232,13 @@ class account:
         """
         Takes a message id number and deletes it from the server
         """
-        typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '(\Deleted)')
-        self.receiveserver.expunge()
+        response = self.receiveserver.uid('COPY', uid, '[Gmail]/Trash')
+        pdb.set_trace()
+        if response[0] == 'OK':
+            typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\Deleted')
+            self.receiveserver.expunge()
+        # move the message to the trash
+        
         return typ
 
     def inbox(self, start=0, amount=10):
@@ -264,3 +269,10 @@ class account:
         data = data[0].split(' ')
         data.reverse()
         return data
+
+    if __name__ == "__main__":
+        listen_server = imaplib2.IMAP4_SSL('imap.gmail.com', 993)
+        listen_server.login('joncairo', 'Carrma123')
+        # initiate listening for incoming mail using threaded process
+        listen_server.select("INBOX") 
+         

@@ -5,6 +5,8 @@ import re
 class ComposeMail(npyscreen.ActionForm):
     def create(self):
         def send_button_press():
+            # regex courtesy of http://www.webmonkey.com
+            #/2008/08/four_regular_expressions_to_check_email_addresses/
             # parse the address out of the "To" field
             parsed_to = re.search('.+\@.+\..+', self.to.value)
             try:
