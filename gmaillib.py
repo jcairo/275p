@@ -234,7 +234,6 @@ class account:
         """
         #response = self.receiveserver.uid('COPY', uid, '[Gmail]/Trash')
         #if response[0] == 'OK':
-        f.write(str(uid) + '\n')
         typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\\Deleted')
         # move the message to the trash
         return typ
