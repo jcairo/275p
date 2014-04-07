@@ -232,13 +232,11 @@ class account:
         """
         Takes a message id number and deletes it from the server
         """
-        response = self.receiveserver.uid('COPY', uid, '[Gmail]/Trash')
-        pdb.set_trace()
-        if response[0] == 'OK':
-            typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\Deleted')
-            self.receiveserver.expunge()
+        #response = self.receiveserver.uid('COPY', uid, '[Gmail]/Trash')
+        #if response[0] == 'OK':
+        f.write(str(uid) + '\n')
+        typ, response = self.receiveserver.uid('STORE', uid, '+FLAGS', '\\Deleted')
         # move the message to the trash
-        
         return typ
 
     def inbox(self, start=0, amount=10):
@@ -251,7 +249,7 @@ class account:
             if(len(each_email) == 1):
                 continue
             # get the uid and pass it to the message class
-            uid_id, uid = re.search(r'UID [1-9]*', each_email[0]).group().split()
+            uid_id, uid = re.search(r'UID [0-9]*', each_email[0]).group().split()
             # check whether the message has been read
             if each_email[0].find('\\Seen') >= 0:
                 unread = False
@@ -270,9 +268,14 @@ class account:
         data.reverse()
         return data
 
-    if __name__ == "__main__":
-        listen_server = imaplib2.IMAP4_SSL('imap.gmail.com', 993)
-        listen_server.login('joncairo', 'Carrma123')
-        # initiate listening for incoming mail using threaded process
-        listen_server.select("INBOX") 
-         
+if __name__ == "__main__":
+    mail = account('joncairo', 'Carrma123')
+    mail.inbox()
+    uids = mail._get_uids()
+    for i in range(10):
+        result, data = mail.receiveserver.uid('fetch', uids[i], '(FLAGS)')
+        print result
+        print data
+    messages = mail.inbox()
+    for message in messages:
+        print message.uid, message.sender_addr
