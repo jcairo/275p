@@ -19,6 +19,11 @@ class ComposeMail(npyscreen.ActionForm):
 
             subj = self.subject.value
             body = self.message.value
+            
+            #replace '\n' with '\r\n' to match content-type: text/plain
+            #for sending and recieving emails
+            body = re.sub('\n','\r\n',body)
+                  
             self.parentApp.mail.send(to, subj, body)  
 
             npyscreen.notify_confirm("Mail sent",
@@ -50,9 +55,12 @@ class ComposeMail(npyscreen.ActionForm):
         try:
             self.to.value = self.parentApp.SENDER
             self.subject.value = "RE: " + self.parentApp.SUBJECT 
-            self.message.value = ('\n' * 8) + \
+
+            self.message.value = ('\n' * 2) + \
                                     ('-' * 40) + \
                                     ('\n' * 2) + \
+                                    ('From: ' + self.parentApp.SENDER) + \
+                                    ('\n') + \
                                     self.parentApp.INBOX_MSG_TXT 
         except Exception as e:
             pass
@@ -67,8 +75,9 @@ class ComposeMail(npyscreen.ActionForm):
 
     def beforeEditing(self):
         #Set message.value if we have a value stored in parentApp attribute
-        self.message.value = self.parentApp.message_save
-        self.message.save_state()
+        if self.parentApp.message_save:
+            self.message.value = self.parentApp.message_save
+            self.message.save_state()
         #set to and subject values if they exist
         if not(self.to.value) and self.parentApp.email_to:
             self.to.value = self.parentApp.email_to

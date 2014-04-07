@@ -162,7 +162,7 @@ class account:
                "Subject: " + subject,
                    "To: " + toaddr,
                    "MIME-Version: 1.0",
-                   "Content-Type: text/html"]
+                   "Content-Type: text/plain"]
         headers = "\r\n".join(headers)
         self.sendserver.sendmail(fromaddr, toaddr, headers + "\r\n\r\n" + msg)
 
