@@ -10,10 +10,6 @@ def edit_distance(s1, s2):
     delete: 1
     replace: 2
     
-    Reccurance relation for edit_distance algorithm referenced from 
-    https://www.stanford.edu/class/cs124/lec/med.pdf (Dan Jurafsky,
-    Stanford University)
-
     Use a dynamic programming approach and calculate cost distance for small i and j 
     (s1[:i] and s2[:j]) first, and keep adding on the cost of additional character
     manipulations on string suffixes for incremental i's and j's. We know that 
@@ -27,6 +23,10 @@ def edit_distance(s1, s2):
     Running Time Analysis: Outer for loop runs len(s1)+1 or n+1 many times and 
     the inner for loop runs len(s2)+1 or m+1 many times. Therefore this algorithm
     has a O(m*n) running time.
+
+    Reccurance relation for edit_distance algorithm referenced from 
+    https://www.stanford.edu/class/cs124/lec/med.pdf (Dan Jurafsky,
+    Stanford University)
 
     #four insertions
     >>> edit_distance("", "Jean")
