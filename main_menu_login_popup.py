@@ -49,8 +49,10 @@ class MainMenuPopup(npyscreen.ActionPopup):
         # inbox_messages list
         self.parentApp.mail.email_hdr_lst = []
         for message in self.parentApp.mail.inbox_messages:
+            #import pdb
+            #pdb.set_trace()
             fmt_msg_hdr = "{0:<{width}.{width}} {1:<17.17} {2:<}".format(
-                message.sender_addr.split(' <')[0],
+                message.sender_addr.split(' <>')[0],
                 message.date, message.subject, width=20)
             self.parentApp.mail.email_hdr_lst.append(fmt_msg_hdr)
 
