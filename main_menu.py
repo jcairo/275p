@@ -1,10 +1,11 @@
+import sys
 import npyscreen
 
 # this is the screen you are forwarded to on startup.
 class MainMenu(npyscreen.FormBaseNew):
     def notify_not_logged_in(self):
-        npyscreen.notify_confirm("Please log in first!", 
-            title="No Database Connection", form_color='GREEN_BLACK',
+        npyscreen.notify_confirm("Please log in first.", 
+            title="Not Logged In", form_color='STANDOUT',
             wrap=True, wide=False, editw=1)
         self.parentApp.switchForm("MAIN")
 
@@ -18,13 +19,28 @@ class MainMenu(npyscreen.FormBaseNew):
             self.parentApp.switchForm("MAIN_POPUP")
         
         def press_compose_button(*args):
-            self.parentApp.switchForm("COMPOSE_MAIL")
+            try:
+                if self.parentApp.mail:
+                    self.parentApp.switchForm("COMPOSE_MAIL")
+            except Exception as e:
+                self.notify_not_logged_in()
+                return
 
         def press_inbox_button(*args):
-            self.parentApp.switchForm("INBOX")
+            try:
+                if self.parentApp.mail:
+                    self.parentApp.switchForm("INBOX")
+            except Exception as e:
+                self.notify_not_logged_in()
+                return
 
         def press_quit_button(*args):
-            pass
+            try:
+                if self.parentApp.mail:
+                    self.mail.exit_server()
+                    sys.exit(0)
+            except Exception as e:
+                sys.exit()
 
         # setup buttons..
         self.login_button = self.add(npyscreen.ButtonPress, 

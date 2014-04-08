@@ -33,6 +33,10 @@ class MyApplication(npyscreen.NPSAppManaged):
         
         # create a queue object to synchronize threads
         self.queue = Queue.Queue(0)
+        
+        # set reply flag as false so if we enter compose form
+        # we don't have a message we are going to reply to in the body
+        self.REPLY = False
 
         self.english_dict = []
         #stores the list of indices corresponding to misspelt words

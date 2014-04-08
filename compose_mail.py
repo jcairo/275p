@@ -51,21 +51,9 @@ class ComposeMail(npyscreen.ActionForm):
 
         
         # if we have been forwarded here from the inbox page
-        # to reply to a message prefill the details To and subject.
-        try:
-            self.to.value = self.parentApp.SENDER
-            self.subject.value = "RE: " + self.parentApp.SUBJECT 
-
-            self.message.value = ('\n' * 2) + \
-                                    ('-' * 40) + \
-                                    ('\n' * 2) + \
-                                    ('From: ' + self.parentApp.SENDER) + \
-                                    ('\n') + \
-                                    self.parentApp.INBOX_MSG_TXT 
-        except Exception as e:
-            pass
-
-        
+        # to reply to a message prefill the details form with
+        # from/to/message.
+                
 
         # set the message body a few lines below
         self.nextrely+=2
@@ -74,6 +62,28 @@ class ComposeMail(npyscreen.ActionForm):
             #name="Send", relx=70)
 
     def beforeEditing(self):
+        if self.parentApp.REPLY:
+            try:
+                self.to.value = self.parentApp.SENDER
+                self.subject.value = "RE: " + self.parentApp.SUBJECT 
+
+                self.message.value = ('\n' * 2) + \
+                                        ('-' * 40) + \
+                                        ('\n' * 2) + \
+                                        ('From: ' + self.parentApp.SENDER) + \
+                                        ('\n') + \
+                                        self.parentApp.INBOX_MSG_TXT 
+            except Exception as e:
+                pass
+        else:
+            # clear all form fields.
+            self.to.value = ''
+            self.subject.value = ''
+            self.message.value = ''
+
+
+        # check reply flad to see whether we are replying to a message
+        # or composing a new one.
         #Set message.value if we have a value stored in parentApp attribute
         if self.parentApp.message_save:
             self.message.value = self.parentApp.message_save
@@ -83,6 +93,7 @@ class ComposeMail(npyscreen.ActionForm):
             self.to.value = self.parentApp.email_to
         if not(self.subject.value) and self.parentApp.email_subject:
             self.subject.value = self.parentApp.email_subject
+
     def afterEditing(self):
         #stores value of from and subject into parentApp attributes 
         #for reference 
@@ -90,8 +101,10 @@ class ComposeMail(npyscreen.ActionForm):
             self.parentApp.email_to = self.to.value
         if self.subject.value:
             self.parentApp.email_subject = self.subject.value
-    
+        self.parentApp.REPLY = False    
+        
     def on_ok(self):
+        self.parentApp.REPLY = False
         self.parentApp.switchFormPrevious()
 
     def on_cancel(self):

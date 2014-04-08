@@ -25,8 +25,18 @@ class Inbox(npyscreen.FormBaseNew):
         self.msg_headers = self.add(MultiLineActionAuto, columns=3,
              max_height=5)
 
+        # set up main menu button
+        def main_menu_button(*args):
+            self.parentApp.switchForm("MAIN")
+
+        # set up compse button
+        def compose_button(*args):
+            self.parentApp.REPLY = False
+            self.parentApp.switchForm("COMPOSE_MAIL")
+
         # set up reply button
         def press_reply_button(*args):
+            self.parentApp.REPLY = True
             self.parentApp.switchForm("COMPOSE_MAIL")
         
         
@@ -43,11 +53,12 @@ class Inbox(npyscreen.FormBaseNew):
             # last message
                  
             msg_uid = self.inbox_messages[selected_msg_index].uid
-            # call server to delete
+            # call server to delete the msg with the specified id
             rv = self.parentApp.mail.delete_msg(msg_uid)
             if rv == 'OK':
                 del self.email_hdr_lst[selected_msg_index]
                 del self.inbox_messages[selected_msg_index]
+                del self.msg_headers.msg_unread[selected_msg_index]
                 # upate the indexes of the read and unread emails.
                 self.msg_headers.update()
                 # update the message body being displayed
@@ -91,6 +102,15 @@ class Inbox(npyscreen.FormBaseNew):
                                 relx=26, rely = 7,
                                 name="Delete")
         self.delete.whenPressed = delete_button
+        self.menu = self.add(npyscreen.ButtonPress,
+                                relx=36, rely = 7,
+                                name="Main Menu")
+        self.menu.whenPressed = main_menu_button
+
+        self.compose = self.add(npyscreen.ButtonPress,
+                                relx=50, rely = 7,
+                                name="Compose New")
+        self.compose.whenPressed = compose_button
 
         # setup message body display
         self.msg_body = self.add(MultiLineEditAuto, name="Compose", 

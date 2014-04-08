@@ -150,8 +150,11 @@ class account:
         
     def exit_server(self):
         self.idler.stop()
-        self.idler.join()
+        self.idler.join(10)
+        self.idler.exit()
         self.sendserver.quit()
+        self.listen_server.close()
+        self.listen_server.logout()
         self.receiveserver.close()
         self.receiveserver.logout()
 

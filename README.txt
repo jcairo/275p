@@ -1,6 +1,7 @@
 Todo's
 
-1. Create a blank text form we can type in to manipulate text
+1. handle deletes better, currently just shows next message.
+    won't work if they delete last message in the list of messages.
 
 2. 
 
