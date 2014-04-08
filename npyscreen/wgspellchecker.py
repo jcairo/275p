@@ -10,9 +10,12 @@ import weakref
 
 class SpellChecker(MultiLineAction):
     """
-    Using MultiLineAction to inherit from, for the widget
-    where the user selects the correction he wants 
-    to replace a misspelt word with
+    Inherits from npyscreen MultiLineAction class. This widget
+    lets the user select a item from a list. If enter
+    is pressed on a item the actionHighlighted function
+    is called which saves the value of the item
+    selected into a parentApp attribute. This widget
+    is used in the spell_check_popup form.
     """
     OK_BUTTON_TEXT          = "REPLACE"
     CANCEL_BUTTON_TEXT      = "SKIP"    
@@ -26,7 +29,8 @@ class SpellChecker(MultiLineAction):
     # the items in the menu
     def actionHighlighted(self, act_on_this, key_press):
         self.value = act_on_this
-        #store the selection to be used later and exit the widget
+        #store the selection to be used later and exit the user
+        #from editing the widget
         self.parent.parentApp.spell_check_selection = act_on_this
         self.editing = False
         self.how_exited = True

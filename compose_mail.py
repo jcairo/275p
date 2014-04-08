@@ -3,6 +3,16 @@ import pdb
 import re
 
 class ComposeMail(npyscreen.ActionForm):
+    """
+    Compose form inherits from npyscreen ActionForm class. Includes a to, subj and 
+    message widget for composing emails. Includes three buttons: Send, Spell Check
+    and Back. If user was sent to the compose form by pressing reply in the inbox 
+    form, then the to and subject widgets values get set. In addition the message 
+    the user is replying to is appended onto the messege widgets value seperated
+    by a dashed line. If we are coming back from doing a spellcheck then the to
+    and subj values remain the same and the corrected message value is used.
+    Otherwise the forms feilds are set to empty strings 
+    """
     OK_BUTTON_TEXT          = ""
     CANCEL_BUTTON_TEXT      = ""   
     def create(self):
@@ -35,10 +45,15 @@ class ComposeMail(npyscreen.ActionForm):
             self.parentApp.switchForm("INBOX") 
 
         def press_spell_check(*args):
+            #switch to spell check form 
+            #set spell check flag to true so that we know 
+            #we have done a spell check when we go back to 
+            #compose form
             self.parentApp.SPELLCHECK = True
             self.parentApp.switchForm("SPELL_CHECK_POPUP")
 
         def press_back(*args):
+            #switch back to compose window
             self.parentApp.REPLY = False
             self.parentApp.switchFormPrevious()
 
@@ -68,18 +83,16 @@ class ComposeMail(npyscreen.ActionForm):
                                 exit_right=True)
 
         
-        # if we have been forwarded here from the inbox page
-        # to reply to a message prefill the details form with
-        # from/to/message.
-                
-
         # set the message body a few lines below
         self.nextrely+=2
         self.nextrelx+=3
         #self.query_confirm = self.add(npyscreen.ButtonPress, 
             #name="Send", relx=70)
-
+        
+    #function is called before edit loop
     def beforeEditing(self):
+        # check reply flag to see whether we are replying to a message
+        # or composing a new one.
         if self.parentApp.REPLY:
             try:
                 self.to.value = self.parentApp.SENDER
@@ -94,6 +107,9 @@ class ComposeMail(npyscreen.ActionForm):
             except Exception as e:
                 pass
         else:
+            #check SPELLCHECK flag to see if we were just
+            #doing spell check. If so keep the same from and subj
+            #values as we had before pressing spell check button
             if self.parentApp.SPELLCHECK:
                 if self.parentApp.message_save:
                     self.message.value = self.parentApp.message_save
@@ -108,17 +124,11 @@ class ComposeMail(npyscreen.ActionForm):
                 self.message.value = ''
 
 
-        # check reply flad to see whether we are replying to a message
-        # or composing a new one.
-        #Set message.value if we have a value stored in parentApp attribute
-       
-        #set to and subject values if they exist
-        #if not(self.to.value) and self.parentApp.email_to:
-        #    self.to.value = self.parentApp.email_to
-        #if not(self.subject.value) and self.parentApp.email_subject:
-        #    self.subject.value = self.parentApp.email_subject
+   
+        #spell check flag is set to false
         self.parentApp.SPELLCHECK = False
 
+    #function is called after edit loop
     def afterEditing(self):
         #stores value of from and subject into parentApp attributes 
         #for reference 
@@ -129,10 +139,4 @@ class ComposeMail(npyscreen.ActionForm):
         self.parentApp.REPLY = False    
        
         
-    ###def on_ok(self):
-    #    self.parentApp.REPLY = False
-    #    self.parentApp.switchFormPrevious()
-
-    #def on_cancel(self):
-    #    self.parentApp.SPELLCHECK = True
-    #    self.parentApp.switchForm("SPELL_CHECK_POPUP")
+   

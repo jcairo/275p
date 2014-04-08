@@ -4,8 +4,19 @@ import pdb
 import string
 class SpellCheckPopup(npyscreen.ActionPopup):
     """
-    Inherits from ActionPopup form. Popups when user presses spellcheck
+    Inherits from npyscreen ActionPopup class. Popups when user presses spellcheck
     and allows user to either correct misspelt words or skip them.
+
+    Sequence of Operations:
+	 1. Find errors in the current message if any. Return list of 
+         error indices 
+	 2. Calculate and diplay corrections for ith misspelt word
+	 3. If user selects replace: replace word and goto next 
+            item in list of error indices
+            If user selects next: goto to next item in list of error 
+            indices
+         4. Check if we are out of errors: if true switches back to compose form
+            Otherwise repeat steps 2 - 4.
     """
     OK_BUTTON_TEXT = "NEXT"
     CANCEL_BUTTON_TEXT = "REPLACE"
@@ -43,7 +54,7 @@ class SpellCheckPopup(npyscreen.ActionPopup):
         
         self.title.value = self.word.strip(string.punctuation)
 
-    # this gets run when the user selects ok 
+    # this gets run when the user selects NEXT 
     def on_ok(self):
         """
         If the NEXT button is pressed skips to the next
@@ -55,10 +66,10 @@ class SpellCheckPopup(npyscreen.ActionPopup):
         #switches back to compose form if no words are left to check
         self.check_form_switch()
        
-    # this gets run when the user selects cancel on the login form.
+    # this gets run when the user selects REPLACE
     def on_cancel(self):
         """
-        If REPLACE button is pressed replaces misspelt word with
+        If REPLACE button is pressed replaces misspelled word with
         the correctly spelled word selected by the user
         """
         self.parentApp.next_index += 1

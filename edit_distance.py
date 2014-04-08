@@ -9,11 +9,15 @@ def edit_distance(s1, s2):
     insert: 1
     delete: 1
     replace: 2
+    
+    Reccurance relation for edit_distance algorithm referenced from 
+    https://www.stanford.edu/class/cs124/lec/med.pdf (Dan Jurafsky,
+    Stanford University)
 
-    Use a bottom-up up approach and calculate cost distance for small i and j 
+    Use a dynamic programming approach and calculate cost distance for small i and j 
     (s1[:i] and s2[:j]) first, and keep adding on the cost of additional character
-    manipulations for incremental i's and j's. We know that when one string is 
-    empty the cost is is easy to compute. For example if i = 0 and j = 1 
+    manipulations on string suffixes for incremental i's and j's. We know that 
+    when one string is empty the cost is is easy to compute. For example if i = 0 and j = 1 
     the cost is 1 for one insertion. Or if i = 0 and j = 5 the cost is 5 for 
     5 insertions. With our inital values calculated we can compute the next by taking
     the min of getting there by either a insert, delete or replace. This makes a table
@@ -46,6 +50,8 @@ def edit_distance(s1, s2):
     """
     
     #memoization table for storing edit_distances 
+    #distance[(i,j)] holds the min edit_distance  for converting
+    #the slice s1[:i] to s2[:j]
     distance = {}
     
     #function for deciding the cost of replace 
@@ -56,9 +62,9 @@ def edit_distance(s1, s2):
         else: 
             return 2
    
-    #run through i positions in s1
+    #run through characters in s1 
     for i in range(0,len(s1)+1):
-        #run through j positions in s2
+        #run through characters in s2
         for j in range(0,len(s2)+1): 
             if j == 0:
                 distance[(i,j)] = i 
@@ -100,6 +106,8 @@ def spell_check(word, d):
     possible_corrections = {}
     c_list = []
     
+    #words with non alphabet characters (excluding punctuation) 
+    #are not corrected
     if not(word[0].isalpha()):
         c_list.append("?")
         return c_list

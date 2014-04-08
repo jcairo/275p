@@ -11,11 +11,21 @@ from wgeditmultiline import MultiLineEdit
 
 class EmailComposeWidget(MultiLineEdit):
     """
-    Inherited from  wgeditmultiline.py
+    Inherits from npyscreen MultiLineEdit class
     Added the abilty to undo and redo 
     Overridded Functions: when_value_edited
     Added key bindings: ctrl + u : undo, ctrl + y : redo 
     Added attributes: u_states and r_states
+
+    Whenever the user presses a key the when_value_edited function is 
+    called which appends the current value of the widget onto u_states
+    (up to 100 states). If the user presses ctrl + u, the h_undo_states
+    function is called and the last state in u_states is popped and
+    the widgets value attribute is set to the popped item, 
+    the popped value is also appended to r_states. If the ctrl + y is
+    pressed h_redo_state is called which pops the last value in r_states
+    and appends it to the end of u_states; in addition the widgets value attribute
+    is set to the popped value from r_states.
     """
     _SAFE_STRING_STRIPS_NL = False
     def __init__(self, screen, autowrap=True, slow_scroll=True, scroll_exit=True, value=None, **keywords):
@@ -77,8 +87,6 @@ class EmailComposeWidget(MultiLineEdit):
             else:
                 self.value = ""
                 
-            #self.update(clear = False)
-            self.CHECK_REDO = True
     def h_redo_state(self, input):
         """
         Redo the text the last undo undid if the r_states list has values 
@@ -88,7 +96,6 @@ class EmailComposeWidget(MultiLineEdit):
         if self.r_states:
             self.u_states.append(self.r_states.pop())
             self.value = self.u_states[-1]
-            #self.parent.parentApp.message_save = self.u_states[-1]
         
 
 
