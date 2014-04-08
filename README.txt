@@ -38,5 +38,19 @@ sometimes we would get an error we could not figure out why. If there are any
 issues please try us the client on os x if possible (although it should work fine
 on linux)
 
+The application can only be used on gmail accounts.
+
 If you have any complaints about running the program please ensure
 your terminal is at least 80 x 25 (standard size)
+
+
+Libraries Used:
+We used several open source libraries in this project
+For all user GUI we use npyscreen
+https://code.google.com/p/npyscreen/
+
+For email server interaction we use an adapted version of gmaillib
+https://github.com/thedjpetersen/gmaillib
+
+Lastly for the Treaded object we use a Thread example from the following link
+http://blog.timstoop.nl/2009/03/11/python-imap-idle-with-imaplib2/
