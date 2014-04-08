@@ -98,8 +98,13 @@ class SpellCheckPopup(npyscreen.ActionPopup):
         in word_list
         """
         error_list = []
-        
+       
         for i, item in enumerate(word_list):
+            #checks have reached the old message boundary of a reply message
+            #if true then breaks, so we do not spell check the message
+            #we are replying to 
+            if item == ('-'*40):
+                break
             tmp = item.strip(string.punctuation)
             if tmp not in d and tmp.lower() not in d:
                 error_list.append(i)
@@ -109,8 +114,10 @@ class SpellCheckPopup(npyscreen.ActionPopup):
         """
         Returns a list of possible corrections for a misspelt word
         """
+        p_end = '?!%"),:.;}]'
+        p_start = '([{"'
         if word:
-            tmp = word.strip(string.punctuation)
+            tmp = word.strip(p_end+p_start)
             return spell_check(tmp, d)
         else:
             return []
@@ -120,12 +127,15 @@ class SpellCheckPopup(npyscreen.ActionPopup):
         Returns the starting and ending punctuation in
         word
         """
+        p_end = '?!%"),:.;}]'
+        p_start = '([{"'
         p = string.punctuation
         s = ""
         e = ""
-        for i in p:
+        for i in p_start:
             if word.startswith(i):
                 s = i
+        for i in p_end:
             if word.endswith(i):
                 e = i
         

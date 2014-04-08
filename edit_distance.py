@@ -1,3 +1,4 @@
+import pdb
 """
 Contains edit_distance, spell_check and read_in_file functions
 """
@@ -66,14 +67,13 @@ def edit_distance(s1, s2):
             else:
                 #calculates the distance for each operation using memoized values and takes min 
                 distance[(i,j)] = min(
-                    #we inserted s2[j] onto the end of s1 therefore we know s2[:j] now equals
-                    #s1[:i+1] so we add 1 to the distance[(i,j-1)] to get the cost at (i,j).
+                    #we inserted s2[j] onto the end of s1
+                    #so we add 1 to the distance[(i,j-1)] to get the cost at (i,j).
                     distance[(i,j-1)] + 1, #insert
-                    #if we delete s1[i] then we know s1[i-1] is equal to s2[j] so  
-                    #we add 1 to distance[(i-1,j)]
+                    #if we delete s1[i] then we add 1 to distance[(i-1,j)]
                     distance[(i-1,j)] + 1, #delete
-                    #if we replace s1[i] with s2[j] then we know s[:i] equal to s[:j] so we 
-                    # add to 2 to distance[(i-1,j-1)] to get cost at (i,j). If s1[i] is 
+                    #if we replace s1[i] with s2[j] then we 
+                    # add 2 to distance[(i-1,j-1)] to get cost at (i,j). If s1[i] is 
                     #equal to s2[j] we add 0 as we do not have to replace
                     distance[(i-1,j-1)] + replace(i-1,j-1) #replace
                     )
@@ -99,7 +99,14 @@ def spell_check(word, d):
 
     possible_corrections = {}
     c_list = []
+    
+    if not(word[0].isalpha()):
+        c_list.append("?")
+        return c_list
 
+    distance = 100
+    
+    
     #loop through each item in dictionary
     for line in d:
         #ignore single characters besides "I"
@@ -113,12 +120,12 @@ def spell_check(word, d):
                  or (word[0].islower() and line[0].islower()))):
             
             distance = edit_distance(word,line)
-            
-            #if the distance is less than 5 append the correction to c_list
+
+            #if the distance is less than 5 append the correction to c_list         
             if(distance < 5): 
                 possible_corrections[line] = distance
                 c_list.append(line)
-    
+           
     return c_list
                 
     
