@@ -32,8 +32,8 @@ class MainMenuPopup(npyscreen.ActionPopup):
                 self.password.value, parent=self.parentApp, 
                 queue=self.parentApp.queue)
 
-        except smtplib.SMTPAuthenticationError:
-            npyscreen.notify_confirm("Login failed", title="Error",
+        except Exception as e:
+            npyscreen.notify_confirm(e, title="Error",
                 form_color='STANDOUT', wrap=True, editw=1)
             return
 

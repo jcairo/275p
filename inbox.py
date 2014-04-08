@@ -17,6 +17,7 @@ class Inbox(npyscreen.FormBaseNew):
         self.keypress_timeout = 10
 
         # setup form attributes to hold message data
+
         self.inbox_messages = self.parentApp.mail.inbox()
         self.email_hdr_lst = []
         self.cursor_pos = 0
@@ -90,7 +91,7 @@ class Inbox(npyscreen.FormBaseNew):
             else:
                 npyscreen.notify_confirm("Failed to mark as read")
         
-        # place buttons on form
+        # boilerplate code for form buttons
         self.reply_button = self.add(npyscreen.ButtonPress,
                                 name="Reply")
         self.reply_button.whenPressed = press_reply_button
