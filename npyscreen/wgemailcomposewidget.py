@@ -72,12 +72,12 @@ class EmailComposeWidget(MultiLineEdit):
             #widgets value to last entry u_states
             if self.u_states:
                 self.value = self.u_states[-1]
-            #print("sean and {} and {}".format(x, self.value))
+                #self.parent.parentApp.message_save = self.u_states[-1]
             #if u_states is empty then the previous state was blank
             else:
                 self.value = ""
                 
-            self.update(clear = False)
+            #self.update(clear = False)
             self.CHECK_REDO = True
     def h_redo_state(self, input):
         """
@@ -88,6 +88,7 @@ class EmailComposeWidget(MultiLineEdit):
         if self.r_states:
             self.u_states.append(self.r_states.pop())
             self.value = self.u_states[-1]
-
+            #self.parent.parentApp.message_save = self.u_states[-1]
+        
 
 

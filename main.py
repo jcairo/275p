@@ -37,6 +37,7 @@ class MyApplication(npyscreen.NPSAppManaged):
         # set reply flag as false so if we enter compose form
         # we don't have a message we are going to reply to in the body
         self.REPLY = False
+        self.SPELLCHECK = False
 
         self.english_dict = []
         #stores the list of indices corresponding to misspelt words
