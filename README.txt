@@ -2,6 +2,8 @@ Cmput 275 Final Project
 Jonathan Cairo
 Sean Schneideman
 
+----
+
 Program overview:
 Please see program_diagram for a visual layout of the objects.
 An application object manages all other objects. This includes the following
@@ -12,27 +14,32 @@ smtp/imap connection used for retrieving messages and sending. The
 other is a THread object which contains the event listener on the server.
 4. Lastly a queue object that allows the 2 threads to communicate with each other.
 
+----
+
 Use Instructions:
 Open a terminal and cd into the directory.
 type "python main.py" to run the program, please note this program uses python 2.
+
 Navigate with the tab and arrow keys.
 Login using any gmail account credentials. 
 Then visit the inbox.
 The inbox should display your 10 most recent emails.
 Send yourself an email from your phone computer etc...., 
-and you should get an instant push notification that
+and you should get an instant push notification.
+
 If emails are unread there text is bright white, otherwise grey.
 Your new email should appear as bright white.
 You can mark as read, and should see this reflected in your account and
 in the application.
-You can also delete.
+You can then delete the message.
 Lastly try replying to the message, You should be taken to a compose form.
 Ctrl + U lets you undo in compose form, and ctrl + y lets you redo.
 However you cannot undo spell check changes.
 WHen you are done typing your message hit spell check to check your spelling
-THen hit send.
+Then hit send.
 When you are done go to the main menu and quit.
 
+----
 
 Notes:
 We did have a sporadic issue when trying to use the program on a linux machine,
@@ -47,6 +54,8 @@ your terminal is at least 80 x 25 (standard size)
 
 Added widgets to npyscreen folder: wgemailcomposewidget.py and 
 wgspellchecker.py 
+
+----
 
 Libraries Used:
 We used several open source libraries in this project
@@ -64,6 +73,3 @@ from https://www.stanford.edu/class/cs124/lec/med.pdf (Dan Jurafsky,
 Stanford University)
 
 british-english word list retrieved from UNIX usr/share/dict
-
-
- 
