@@ -1,70 +1,69 @@
-Todo's
+Cmput 275 Final Project
+Jonathan Cairo
+Sean Schneideman
 
-1. handle deletes better, currently just shows next message.
-    won't work if they delete last message in the list of messages.
+Program overview:
+Please see program_diagram for a visual layout of the objects.
+An application object manages all other objects. This includes the following
+1. Several forms objects which make up the user interface.
+2. A mail object which holds the message objects in the inbox.
+3. An account object which has 2 sub objects 1 is an interactive
+smtp/imap connection used for retrieving messages and sending. The
+other is a THread object which contains the event listener on the server.
+4. Lastly a queue object that allows the 2 threads to communicate with each other.
 
-2. 
+Use Instructions:
+Open a terminal and cd into the directory.
+type "python main.py" to run the program, please note this program uses python 2.
+Navigate with the tab and arrow keys.
+Login using any gmail account credentials. 
+Then visit the inbox.
+The inbox should display your 10 most recent emails.
+Send yourself an email from your phone computer etc...., 
+and you should get an instant push notification that
+If emails are unread there text is bright white, otherwise grey.
+Your new email should appear as bright white.
+You can mark as read, and should see this reflected in your account and
+in the application.
+You can also delete.
+Lastly try replying to the message, You should be taken to a compose form.
+Ctrl + U lets you undo in compose form, and ctrl + y lets you redo.
+However you cannot undo spell check changes.
+WHen you are done typing your message hit spell check to check your spelling
+THen hit send.
+When you are done go to the main menu and quit.
 
-3. 
 
-Sean APPLICATION FORMS
+Notes:
+We did have a sporadic issue when trying to use the program on a linux machine,
+sometimes we would get an error we could not figure out why. If there are any
+issues please try us the client on os x if possible (although it should work fine
+on linux)
 
-compose_form:
+The application can only be used on gmail accounts.
 
-Form inherits from the npyscreen ActionForm class. This form has a to, subject and message
-feilds for composing emails. If we are replying to a message the
-to and subject feilds get set with who we are replying to and reply subject. In
-addtion the message we are replying to is appended to the message value with 
-a dashed line separating it from the rest of the message.
+If you have any complaints about running the program please ensure
+your terminal is at least 80 x 25 (standard size)
 
-spell_check_poup form:
+Added widgets to npyscreen folder: wgemailcomposewidget.py and 
+wgspellchecker.py 
 
-Inherits from the npyscreen ActionPopup class. This form popups when user presses
-the Spell Check button in the compose window.
-Displays current misspelled word and list of corrections the user can choose 
-from. The user can choose to either replace or skip the current word. This
-form uses functions from edit_distance.py for doing spell_check.
+Libraries Used:
+We used several open source libraries in this project
+For all user GUI we use npyscreen
+https://code.google.com/p/npyscreen/
 
-sean ADDITIONAL APPLICATION WIDGETS
+For email server interaction we use an adapted version of gmaillib
+https://github.com/thedjpetersen/gmaillib
+
+Lastly for the Treaded object we use a Thread example from the following link
+http://blog.timstoop.nl/2009/03/11/python-imap-idle-with-imaplib2/
+
+For writing the edit_distance algorithm used Recurrence relation referenced
+from https://www.stanford.edu/class/cs124/lec/med.pdf (Dan Jurafsky,
+Stanford University)
+
+british-english word list retrieved from UNIX usr/share/dict
+
+
  
-npyscreen/wgemailcomposewidget.py widget:
-
-This widget inherits from the npyscreen MultiLineEdit class. This widget
-lets us type and delete characters in a multiline Field. Extends superclass 
-to allow undo and redo ability using key bindings ctrl + u (undo) and
-ctrl + r (redo). The string typed into the widget is stored
-in its value attribute. This widget is used in the compose form.
-
-npyscreen/wgspellchecker.py widget:
-
-This widget inherits from the npyscreen MultiLineAction class. Lets us select from 
-list of items and saves the selection in a parentApp attribute. The list
-of items is stored in the values attribute. This widget is used in the
-spell_check_popup form.
-
-sean MICCELANEOUS FILES
-
-edit_distance.py file:
-
-  Contains three functions:
-    edit_distance(s1, s2): returns the min number of character 
-    manipulations needed to turn s1 into s2. Uses three character
-    manipulations with cost (insert: 1, replace: 2, delete: 1). 
-    Recurrence relation used for edit_distance algorithm
-    referenced from https://www.stanford.edu/class/cs124/lec/med.pdf
-    (Dan Jurafsky, Stanford University)
-	 
-    read_in_dict(dictionary): reads in a list of words from 
-    text file.
-	 
-    spell_check(word, d): returns a list of corrections from d for word. 
-    Corrections must have a edit_distance(word, correction) < 5 and 
-    start with the character and case.
-
-
-british-english:
-
-A txt file with ~99000 english words retrieved from UNIX usr/share/dict.
-Used to check if a word is correctly spelled and generate a list 
-of possible corrections for misspelled words.  
-
