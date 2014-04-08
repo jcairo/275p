@@ -9,6 +9,16 @@ import pdb
 import mail_listener
 import Queue
 
+# gmaillib is an imap library and was found here:
+# https://github.com/thedjpetersen/gmaillib
+# although we have used much of its basic structure
+# we added the ability to store the state of eacah email
+# read/unread and store a unique message id on each email.
+# we also added the ability for the account class which
+# manages the gmail connections to create a threaded object
+# which is an event listener on the gmail server.
+
+
 #THE MESSAGE CLASS
 
 #PROPERTIES OF A MESSAGE:
@@ -19,25 +29,8 @@ import Queue
 #4. date -- date that the message was sent
 #5. subject -- subject of the email
 #6. body -- content of the email
-
-class Mailbox(object):
-    """
-    A mailbox conatains message instances and provides methods
-    to update the contents when a new email arrives, delete mail
-    and mark mail as read.
-    """
-    def __init__(self):
-
-        def add_mail(self):
-            pass
-
-        def delete_mail(self, uid):
-            pass
-
-        def get_mail_headers(self, uid):
-            pass
-
-
+#7. uid -- unique message id
+#8. message unread/read
 class message:
     def __init__(self, fetched_email, uid=None, unread=None):
         accepted_types = ['text/plain']
@@ -121,19 +114,17 @@ class message:
 #1. username -- username of the account
 #2. password -- password associated with the account
 
-
-#clarification reqd on the following two items:
-#3. sendserver
-#4. receiveserver
-
 class account:
     def __init__(self, username, password, parent=None, queue=None):
         self.parent = parent
         self.username = username
         self.password = password
+
         # attach communication queue to account instance
+        # this is how we will communicate with the subthread.
         self.queue = queue
 
+        # create smtp instance for sending messages.
         self.sendserver = smtplib.SMTP('smtp.gmail.com:587')
         self.sendserver.starttls()
         self.sendserver.login(username,password)
@@ -149,6 +140,7 @@ class account:
         self.idler.start()
         
     def exit_server(self):
+        # shut down all connections and processes.
         self.idler.stop()
         self.idler.join(10)
         self.idler.exit()
@@ -160,7 +152,6 @@ class account:
 
     def send(self, toaddr, subject='', msg=''):
         fromaddr = self.username
-
         headers = ["From: " + fromaddr,
                "Subject: " + subject,
                    "To: " + toaddr,
@@ -183,10 +174,6 @@ class account:
         
         '''
         
-        # NOTE: Gmail's advanced search is limited by the mail box selection
-        # irrespective of what we include in the search string.
-        # e.g. label:anywhere will return Inbox results only.
-
         self.receiveserver.select("Inbox")
         fetch_str = self.receiveserver.uid('SEARCH', None, 'X-GM-RAW', search_string)[1][0]
         fetch_list = fetch_str.split(' ')
@@ -206,7 +193,6 @@ class account:
 
     def unread(self):
         self.receiveserver.select('Inbox')
-        #fetch_list = self.receiveserver.search(None,'UnSeen')[1][0]
         fetch_list = self.receiveserver.search(None,'(BODY.PEEK[HEADER])')[1][0]
         fetch_list = fetch_list.split(' ')
         if fetch_list == ['']:
@@ -218,7 +204,6 @@ class account:
 
     def get_email(self, email_id):
         self.receiveserver.select('Inbox')
-        #This nasty syntax fetches the email as a string
         fetched_email = self.receiveserver.fetch(email_id, "(RFC822)")[1][0][1]
         parsed_email = message(fetched_email)
         return parsed_email
@@ -242,8 +227,11 @@ class account:
         return typ
 
     def inbox(self, start=0, amount=10):
+        # select the message inbox
         self.receiveserver.select('Inbox')
+        # create an empty list
         inbox_emails = []
+        # get a list of messages
         messages_to_fetch = ','.join(self._get_uids()[start:start+amount])
         fetch_list = self.receiveserver.uid('fetch', messages_to_fetch,
             '(BODY.PEEK[] FLAGS)')
@@ -270,6 +258,7 @@ class account:
         data.reverse()
         return data
 
+# test script not used in application.
 if __name__ == "__main__":
     mail = account('joncairo', 'Carrma123')
     mail.inbox()

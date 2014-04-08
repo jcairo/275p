@@ -13,10 +13,8 @@ class Inbox(npyscreen.FormBaseNew):
         THis is run like the __init__ method when
         we create a new class instance
         """
-        # set mail check time
+        # set mail check time length
         self.keypress_timeout = 10
-
-        # setup form attributes to hold message data
 
         #self.inbox_messages = self.parentApp.mail.inbox()
         self.inbox_messages = self.parentApp.mail.inbox_messages
@@ -32,7 +30,7 @@ class Inbox(npyscreen.FormBaseNew):
         def main_menu_button(*args):
             self.parentApp.switchForm("MAIN")
 
-        # set up compse button
+        # set up compose button
         def compose_button(*args):
             self.parentApp.REPLY = False
             self.parentApp.switchForm("COMPOSE_MAIL")
@@ -52,8 +50,6 @@ class Inbox(npyscreen.FormBaseNew):
             if num_msgs == 1:
                 npyscreen.notify_ok_cancel("Can't delete last message in box")
                 return
-            # if we are deleting the last message show the body of the second
-            # last message
                  
             msg_uid = self.parentApp.mail.inbox_messages[selected_msg_index].uid
             # call server to delete the msg with the specified id
@@ -122,8 +118,6 @@ class Inbox(npyscreen.FormBaseNew):
                                 slow_scroll=True, exit_left=True, 
                                 exit_right=True)
 
-        # get a list of email headers from/date/subject
-
         # pass the list of headers to the widget to display
         self.msg_headers.values = self.parentApp.mail.email_hdr_lst
 
@@ -132,9 +126,7 @@ class Inbox(npyscreen.FormBaseNew):
         self.msg_body.value = self.parentApp.mail.inbox_messages[0].body 
 
     def new_mail(self, *args):
-        # this gets called from the threaded mail checker process an event
-        # unfortuneatly events can be all sorts of things like deleting a message
-        # so before we actually can confirm we received new mail we need to check
+        # before we actually can confirm we received new mail we need to check
         # whether a new piece of mail actually exists.
         new_msg = self.parentApp.mail.inbox(amount=1)[0]
         if new_msg.uid == self.parentApp.mail.inbox_messages[0].uid:
